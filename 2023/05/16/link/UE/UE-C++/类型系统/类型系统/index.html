@@ -22,22 +22,22 @@
     <meta name="description" content="UE的类型系统-UObject本篇为InsideUE5系列UObject相关博文的个人学习整理笔记，原作者为：大钊 - 知乎 (zhihu.com) 作者为虚幻引擎大中华区社区经理，这篇UObject系列从源码层面深度解析了UnrealEngine的类型系统。 原文中的源码分析基于4.14.2版本，当前最新版本为5.1，文中描述的一些实现已经过时，本篇在学习系列文章的同时，针对5.1版本的实现进行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-C++】类型系统">
-<meta property="og:url" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:url" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="UE的类型系统-UObject本篇为InsideUE5系列UObject相关博文的个人学习整理笔记，原作者为：大钊 - 知乎 (zhihu.com) 作者为虚幻引擎大中华区社区经理，这篇UObject系列从源码层面深度解析了UnrealEngine的类型系统。 原文中的源码分析基于4.14.2版本，当前最新版本为5.1，文中描述的一些实现已经过时，本篇在学习系列文章的同时，针对5.1版本的实现进行">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg">
-<meta property="og:image" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1680929494406.png">
-<meta property="og:image" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1681355640837.png">
-<meta property="og:image" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg">
-<meta property="og:image" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B.svg">
+<meta property="og:image" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg">
+<meta property="og:image" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1680929494406.png">
+<meta property="og:image" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1681355640837.png">
+<meta property="og:image" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg">
+<meta property="og:image" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B.svg">
 <meta property="article:published_time" content="2023-05-16T02:00:00.000Z">
 <meta property="article:modified_time" content="2024-12-16T15:42:54.615Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="UE-C++">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg">
+<meta name="twitter:image" content="http://example.com/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -331,7 +331,7 @@
 <p>标记了宏，生成的代码为 <code>xxx.generated.h</code>、<code>xxx.gen.cpp</code>。<br>假如我们为A类生成了 <code>A.generated.h</code>和 <code>A.gen.cpp</code>，此时 <code>A.h</code>需要 <code>#include &quot;A.generated.h&quot;</code>而且规定是最后一个include。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> UPROPERTY(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UFUNCTION(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> USTRUCT(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UMETA(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UPARAM(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UENUM(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UDELEGATE(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> RIGVM_METHOD(...)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UCLASS(...) BODY_MACRO_COMBINE(CURRENT_FILE_ID,_,__LINE__,_PROLOG)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UINTERFACE(...) UCLASS()</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><img src="/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg" srcset="/img/loading.gif" lazyload class="" title="结构关系">
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><img src="/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg" srcset="/img/loading.gif" lazyload class="" title="结构关系">
 
 <ul>
 <li>聚合类型UStruct)<ul>
@@ -561,7 +561,7 @@
 <hr>
 <h2 id="UObject（八）类型系统注册-CoreUObject模块加载"><a href="#UObject（八）类型系统注册-CoreUObject模块加载" class="headerlink" title="UObject（八）类型系统注册-CoreUObject模块加载"></a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/57611137">UObject（八）类型系统注册-CoreUObject模块加载</a></h2><p>之前讲的是程序启动后在执行Main函数前所做的Static初始化阶段。接下来开始介绍Main函数入口进来后的流程。</p>
 <h3 id="引擎整体流程"><a href="#引擎整体流程" class="headerlink" title="引擎整体流程"></a>引擎整体流程</h3><p>PC端的入口在 <code>LanuchWindows.cpp:WinMain</code>。下图中绿色的部分表示有涉及 <code>CoreUObject</code>模块。</p>
-<img src="/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1680929494406.png" srcset="/img/loading.gif" lazyload class="" width="1680929494406">
+<img src="/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1680929494406.png" srcset="/img/loading.gif" lazyload class="" width="1680929494406">
 
 <ul>
 <li><p>static初始化就是指的是前文说的收集过程</p>
@@ -622,7 +622,7 @@
 <li>浅蓝色箭头和矩形代表内存中UClass*以及类型对象的创建和构造。</li>
 <li>信息手机里的黄色矩形，表示他们会一直在内存中，用来做查找使用，不会被清空。</li>
 </ul>
-<img src="/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1681355640837.png" srcset="/img/loading.gif" lazyload class="" width="1681355640837">
+<img src="/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/1681355640837.png" srcset="/img/loading.gif" lazyload class="" width="1681355640837">
 
 <hr>
 <h2 id="UObject（十一）类型系统构造-构造绑定链接"><a href="#UObject（十一）类型系统构造-构造绑定链接" class="headerlink" title="UObject（十一）类型系统构造-构造绑定链接"></a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/59553490">UObject（十一）类型系统构造-构造绑定链接</a></h2><p>在为每一个enum、struct、class在类型注册的最后，都进行了一次 <code>OuterRegisterFn</code>调用(可参见 <code>ClassRegistry.DoPendingOuterRegistrations</code>)，而这些其实就是生成代码里的函数。</p>
@@ -762,9 +762,9 @@
 <li>EPropertyFlags：属性的特征标志。</li>
 </ul>
 <p>具体的请读者们自己去查看定义了，太多了就不一一解释了。这也是一种常用的C++惯用法，枚举标志来表示叠加的特征。</p>
-<h4 id="类型系统类图"><a href="#类型系统类图" class="headerlink" title="类型系统类图"></a>类型系统类图</h4><img src="/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg" srcset="/img/loading.gif" lazyload class="" title="结构关系">
+<h4 id="类型系统类图"><a href="#类型系统类图" class="headerlink" title="类型系统类图"></a>类型系统类图</h4><img src="/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E7%B1%BB%E5%9B%BE.svg" srcset="/img/loading.gif" lazyload class="" title="结构关系">
 
-<h4 id="各个类型的构造"><a href="#各个类型的构造" class="headerlink" title="各个类型的构造"></a>各个类型的构造</h4><img src="/2023/05/16/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B.svg" srcset="/img/loading.gif" lazyload class="" title="类型构造过程">
+<h4 id="各个类型的构造"><a href="#各个类型的构造" class="headerlink" title="各个类型的构造"></a>各个类型的构造</h4><img src="/2023/05/16/link/UE/UE-C++/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B.svg" srcset="/img/loading.gif" lazyload class="" title="类型构造过程">
 
 <hr>
 <h2 id="UObject（十三）类型系统-反射实战"><a href="#UObject（十三）类型系统-反射实战" class="headerlink" title="UObject（十三）类型系统-反射实战"></a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/61042237">UObject（十三）类型系统-反射实战</a></h2><p>本篇讲一些利用反射的例子。</p>
@@ -848,7 +848,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>【UE-C++】类型系统</div>
-      <div>http://example.com/2023/05/16/UE/UE-C++/类型系统/类型系统/</div>
+      <div>http://example.com/2023/05/16/link/UE/UE-C++/类型系统/类型系统/</div>
     </div>
     <div class="license-meta">
       
@@ -892,7 +892,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/16/UE/DS/1_%E5%88%9D%E8%AF%86DS/1_%E5%88%9D%E8%AF%86DS/" title="【UE-DS】初识DS">
+                      <a href="/2024/12/16/link/UE/DS/1_%E5%88%9D%E8%AF%86DS/1_%E5%88%9D%E8%AF%86DS/" title="【UE-DS】初识DS">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">【UE-DS】初识DS</span>
                         <span class="visible-mobile">上一篇</span>
