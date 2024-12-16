@@ -23,7 +23,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】初识DS">
 <meta property="og:url" content="http://example.com/2024/12/16/link/UE/DS/1_%E5%88%9D%E8%AF%86DS/1_%E5%88%9D%E8%AF%86DS/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="LiXiang&#39;s Blog">
 <meta property="og:description" content="初识DS本篇作为DS入门文档，讲述了DS的构建过程，通过登录、射击游戏的例子对DS开发有一个初步的了解。Demo链接：https:&#x2F;&#x2F;gitee.com&#x2F;lixiang2202&#x2F;uedemo_ds文档理论性偏弱，操作性较强，建议跟随文档进行操作，收获更多。 Dedicated Server – 专用服务器来自官方文档的介绍：在虚幻引擎中设置专用服务器 | 虚幻引擎 5.5 文档 | Epic De">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2024/12/16/link/UE/DS/1_%E5%88%9D%E8%AF%86DS/1_%E5%88%9D%E8%AF%86DS/1733758314967.png">
@@ -62,7 +62,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>【UE-DS】初识DS - Hexo</title>
+  <title>【UE-DS】初识DS - LiXiang&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -307,7 +307,7 @@
 <p>Actor提供了 <code>AActor::HasAuthority()</code>方法来判断是否在服务器上。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">AActor::HasAuthority</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">return</span> (<span class="hljs-built_in">GetLocalRole</span>() == ROLE_Authority);<br>&#125;<br><span class="hljs-function">ENetRole <span class="hljs-title">GetLocalRole</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123; <span class="hljs-keyword">return</span> Role; &#125;<br></code></pre></td></tr></table></figure>
 
-<h2 id="启用专用服务器"><a href="#启用专用服务器" class="headerlink" title="启用专用服务器"></a>启用专用服务器</h2><h3 id="使用源码引擎"><a href="#使用源码引擎" class="headerlink" title="使用源码引擎"></a>使用源码引擎</h3><p>DS需要使用 <code>Development Server</code>编译模式，这个模式只有使用源码编译的UE5所创建的工程才有这个模式。<br>编译教程可以在网上搜，建议clone时使用ssh协议(<a href="mailto:&#x67;&#x69;&#116;&#x40;&#x67;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;">&#x67;&#x69;&#116;&#x40;&#x67;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;</a>:EpicGames&#x2F;UnrealEngine.git)，比https协议更加稳定。</p>
+<h2 id="启用专用服务器"><a href="#启用专用服务器" class="headerlink" title="启用专用服务器"></a>启用专用服务器</h2><h3 id="使用源码引擎"><a href="#使用源码引擎" class="headerlink" title="使用源码引擎"></a>使用源码引擎</h3><p>DS需要使用 <code>Development Server</code>编译模式，这个模式只有使用源码编译的UE5所创建的工程才有这个模式。<br>编译教程可以在网上搜，建议clone时使用ssh协议(<a href="mailto:&#x67;&#105;&#116;&#x40;&#x67;&#x69;&#x74;&#104;&#x75;&#x62;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#105;&#116;&#x40;&#x67;&#x69;&#x74;&#104;&#x75;&#x62;&#x2e;&#x63;&#111;&#x6d;</a>:EpicGames&#x2F;UnrealEngine.git)，比https协议更加稳定。</p>
 <img src="/2024/12/16/link/UE/DS/1_%E5%88%9D%E8%AF%86DS/1_%E5%88%9D%E8%AF%86DS/1733759516965.png" srcset="/img/loading.gif" lazyload class="" width="1733759516965">
 
 <blockquote>
