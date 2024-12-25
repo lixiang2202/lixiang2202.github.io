@@ -22,25 +22,25 @@
     <meta name="description" content="编写多人游戏-基础篇 网络上UE网络同步开发相关资料非常多，本篇结合官方文档和网络上的优秀文章对UE多人游戏开发做一个相对全面的介绍。在文章最后，有列出所有的参考资料。  在UE中，多人游戏与单人游戏的唯一不同是网络同步相关的Actor在服务器和客户端各有一份，服务器端是主控，客户端一般是服务器的Actor的副本，一般有两种：Autonomous（客户端对其有操控权，如客户端所操控的Pawn）；S">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】编写多人游戏-基础篇">
-<meta property="og:url" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/index.html">
+<meta property="og:url" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
 <meta property="og:description" content="编写多人游戏-基础篇 网络上UE网络同步开发相关资料非常多，本篇结合官方文档和网络上的优秀文章对UE多人游戏开发做一个相对全面的介绍。在文章最后，有列出所有的参考资料。  在UE中，多人游戏与单人游戏的唯一不同是网络同步相关的Actor在服务器和客户端各有一份，服务器端是主控，客户端一般是服务器的Actor的副本，一般有两种：Autonomous（客户端对其有操控权，如客户端所操控的Pawn）；S">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
-<meta property="og:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png">
-<meta property="og:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png">
-<meta property="og:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png">
-<meta property="og:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png">
-<meta property="og:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png">
-<meta property="article:published_time" content="2024-12-24T16:36:56.000Z">
-<meta property="article:modified_time" content="2024-12-24T16:37:26.739Z">
+<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
+<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png">
+<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png">
+<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png">
+<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png">
+<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png">
+<meta property="article:published_time" content="2024-12-25T16:31:00.000Z">
+<meta property="article:modified_time" content="2024-12-25T16:31:01.786Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
 <meta property="article:tag" content="网络开发">
 <meta property="article:tag" content="网络同步">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
+<meta name="twitter:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -228,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.7k 字
+          5.2k 字
         
       </span>
     
@@ -239,7 +239,7 @@
         
         
         
-          40 分钟
+          43 分钟
         
       </span>
     
@@ -299,17 +299,17 @@
 <p><em>本篇文章提到的<strong>服务器</strong>指的是<strong>DedicatedServer</strong>或<strong>ListenServer</strong>，后文不在赘述</em></p>
 </blockquote>
 <p>这对<strong>Actor复制</strong>、<strong>属性复制</strong>、<strong>RPC</strong>来说很重要。</p>
-<img src="/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png" srcset="/img/loading.gif" lazyload class="" title="ActorOwnerAndOwningActor">
+<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png" srcset="/img/loading.gif" lazyload class="" title="ActorOwnerAndOwningActor">
 
 <p>如上图所示，在客户端1上，你的输入将在 <code>PlayerController1</code>中处理，然后传达给 <code>Pawn1</code>。<br>当客户端1连接到服务器时，在服务器上会建立网络连接 <code>NetConnection1</code>并创建 <code>PlayerControllorS1</code>。<code>PawnS1</code>由 <code>PlayerControllerS1</code>拥有。<code>PawnS1</code>的所属连接是 <code>NetConnection1</code>，这是 <code>PlayerControllerS1</code>的所属连接。</p>
 <h2 id="网络模式和身份"><a href="#网络模式和身份" class="headerlink" title="网络模式和身份"></a>网络模式和身份</h2><h3 id="游戏运行模式"><a href="#游戏运行模式" class="headerlink" title="游戏运行模式"></a>游戏运行模式</h3><p>在编辑器中，通常有三种模式运行：</p>
-<img src="/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png" srcset="/img/loading.gif" lazyload class="" width="1734535616615">
+<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png" srcset="/img/loading.gif" lazyload class="" width="1734535616615">
 
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// LevelEditorPlaySettings.h</span><br><span class="hljs-built_in">UENUM</span>()<br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">EPlayNetMode</span> : <span class="hljs-type">int</span><br>&#123;<br>	<span class="hljs-function">PIE_Standalone <span class="hljs-title">UMETA</span><span class="hljs-params">(DisplayName=<span class="hljs-string">&quot;Play Standalone&quot;</span>)</span>,</span><br><span class="hljs-function">	PIE_ListenServer <span class="hljs-title">UMETA</span><span class="hljs-params">(DisplayName=<span class="hljs-string">&quot;Play As Listen Server&quot;</span>)</span>,</span><br><span class="hljs-function">	PIE_Client <span class="hljs-title">UMETA</span><span class="hljs-params">(DisplayName=<span class="hljs-string">&quot;Play As Client&quot;</span>)</span>,</span><br><span class="hljs-function">&#125;</span>;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li><p>PIE_Standalone<br>将启动一个独立进程游戏。此操作不会创建专用服务器，也不会自动连接到一个服务器。也就是说启动一个单机游戏。<br>打开 <code>bLaunchSeparateServer</code>选项，则可以创建Server。客户端需要主动连接Server。</p>
-<img src="/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png" srcset="/img/loading.gif" lazyload class="" width="1735055074459"></li>
+<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png" srcset="/img/loading.gif" lazyload class="" width="1735055074459"></li>
 <li><p>PIE_Client<br>编辑器将用作客户端，打开界面是一个客户端，跑的是客户端代码。当设置多玩家时，多个窗口代表多个客户端。同时UE还会启动一个Server。这个Server是否与编辑器处于同一进程，由 <code>RunUnderOneProcess</code>设置控制。</p>
 
 <p>如果勾选该设置，Server会在UE进程下，否则Server会单独启一个进程来创建。<br>这个模式下，启动的Client会自动连接Server</p>
@@ -384,10 +384,13 @@
 <blockquote>
 <p>可以重载 <code>AActor::GetNetPriority</code>来自定义Actor优先级。<br>这个方法默认是为了基于与观看者间的距离、观看者的视线以及自上次复制当前Actor以来的时间，计算 <code>AActor::NetPriority</code>的乘法因子。</p>
 </blockquote>
-<h2 id="Actor组件复制"><a href="#Actor组件复制" class="headerlink" title="Actor组件复制"></a>Actor组件复制</h2><h2 id="复制子对象"><a href="#复制子对象" class="headerlink" title="复制子对象"></a>复制子对象</h2><h2 id="Online-Beacons"><a href="#Online-Beacons" class="headerlink" title="Online Beacons"></a>Online Beacons</h2><h2 id="RPC及使用"><a href="#RPC及使用" class="headerlink" title="RPC及使用"></a>RPC及使用</h2><p>RPC（远程过程调用）是在本地调用但在其他及其上远程执行的函数。</p>
+<h2 id="Actor组件复制"><a href="#Actor组件复制" class="headerlink" title="Actor组件复制"></a>Actor组件复制</h2><p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/zh-cn/unreal-engine/replicating-actor-components-in-unreal-engine">Replicating Actor Components in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community</a></p>
+<h2 id="复制子对象"><a href="#复制子对象" class="headerlink" title="复制子对象"></a>复制子对象</h2><p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/zh-cn/unreal-engine/replicating-uobjects-in-unreal-engine">虚幻引擎中的复制子对象 | 虚幻引擎 5.5 文档 | Epic Developer Community</a></p>
+<h2 id="Online-Beacons"><a href="#Online-Beacons" class="headerlink" title="Online Beacons"></a>Online Beacons</h2><p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/zh-cn/unreal-engine/using-online-beacons-in-unreal-engine">使用虚幻引擎中的Online Beacons系统 | 虚幻引擎 5.5 文档 | Epic Developer Community</a></p>
+<h2 id="RPC及使用"><a href="#RPC及使用" class="headerlink" title="RPC及使用"></a>RPC及使用</h2><p>RPC（远程过程调用）是在本地调用但在其他及其上远程执行的函数。</p>
 <p>要将一个函数声明为RPC，需要将 <code>Server</code>、<code>Client</code>或 <code>NetMulticast</code>关键字添加到UFUNCTION声明中。RPC函数默认是不可靠的，可以指定 <code>Reliable</code>关键字使其必然会被执行。</p>
 <p>三种RPC的声明方式根据Actor的所有权不同，决定了RPC将在哪里执行，如下表：</p>
-<img src="/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png" srcset="/img/loading.gif" lazyload class="" width="1734881609543">
+<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png" srcset="/img/loading.gif" lazyload class="" width="1734881609543">
 
 <blockquote>
 <p>以下例子是基于第一篇文章的Demo(<a target="_blank" rel="noopener" href="https://gitee.com/lixiang2202/uedemo_ds">lixiang2202&#x2F;UEDemo_DS</a>)进行扩展<br>下述代码在 <code>AUEDemo_DSCharacter</code>类中实现了三个RPC接口，其实现是打印了参数Tag：</p>
@@ -418,19 +421,23 @@
 </ul>
 </li>
 </ul>
-<img src="/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png" srcset="/img/loading.gif" lazyload class="" width="1734883151880">
+<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png" srcset="/img/loading.gif" lazyload class="" width="1734883151880">
 
+<blockquote>
+<p>注意：不要在BeginPlay里调用RPC，在同步时，RPC要早于Actor的同步，如果在BeginPlay中调用RPC，当RPC请求到达客户端时Actor还未生成。</p>
+</blockquote>
 <h2 id="属性同步及使用"><a href="#属性同步及使用" class="headerlink" title="属性同步及使用"></a>属性同步及使用</h2><p>Actor的属性复制是在多人游戏开发中最重要的部分。当Actor类成员属性中带有 <code>Replicated</code>和 <code>ReplicatedUsing</code>元数据说明符标记时，服务器会在每次更改其值时向每个连接的客户端发送更新，每个客户端会将更新的值应用到其本地版本的Actor。</p>
 <blockquote>
 <p>Demo(<a target="_blank" rel="noopener" href="https://gitee.com/lixiang2202/uedemo_ds">lixiang2202&#x2F;UEDemo_DS</a>)中对属性复制的各种方式做了详细的测试用例，可参见 <code>Source\UEDemo_DS\ADerivedActor.h</code>。本例中摘取部分重点代码进行介绍。建议下载Demo，尝试修改 <code>ADerivedActor::DoFunc()</code>中对各种同步属性的修改，观察属性复制的结果。</p>
 </blockquote>
-<h3 id="Replicated"><a href="#Replicated" class="headerlink" title="Replicated"></a>Replicated</h3><p><code>Replicated</code>属性标记属性需要复制，并在 <code>GetLifetimeReplicatedProps</code>方法中通过宏 <code>DOREPLIFETIME(ADerivedActor, TestReplicated)</code>来指明复制的方式（即无条件复制）。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// ADerivedActor.h</span><br><span class="hljs-built_in">UPROPERTY</span>(Replicated) <span class="hljs-comment">// 定义该属性需要复制</span><br><span class="hljs-type">int</span> TestReplicated = <span class="hljs-number">0</span>;<br><span class="hljs-comment">// ADerivedActor.cpp</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ADerivedActor::GetLifetimeReplicatedProps</span><span class="hljs-params">(TArray&lt;<span class="hljs-keyword">class</span> FLifetimeProperty&gt;&amp; OutLifetimeProps)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123; <span class="hljs-comment">// 注册需要同步的属性,该方法重写了Actor的方法</span><br>	Super::<span class="hljs-built_in">GetLifetimeReplicatedProps</span>(OutLifetimeProps);<br>	<span class="hljs-built_in">DOREPLIFETIME</span>(ADerivedActor, TestReplicated); <span class="hljs-comment">// 注册该属性的复制方式</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>属性同步是<strong>单向的</strong>。只能从服务器同步到客户端，不能从客户端同步到服务器。</p>
+<h3 id="Replicated"><a href="#Replicated" class="headerlink" title="Replicated"></a>Replicated</h3><p><code>Replicated</code>属性标记属性需要复制，并在 <code>GetLifetimeReplicatedProps</code>方法中通过宏 <code>DOREPLIFETIME(ADerivedActor, TestReplicated)</code>来进行注册。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// ADerivedActor.h</span><br><span class="hljs-built_in">UPROPERTY</span>(Replicated) <span class="hljs-comment">// 定义该属性需要复制</span><br><span class="hljs-type">int</span> TestReplicated = <span class="hljs-number">0</span>;<br><span class="hljs-comment">// ADerivedActor.cpp</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ADerivedActor::GetLifetimeReplicatedProps</span><span class="hljs-params">(TArray&lt;<span class="hljs-keyword">class</span> FLifetimeProperty&gt;&amp; OutLifetimeProps)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123; <span class="hljs-comment">// 注册需要同步的属性,该方法重写了Actor的方法</span><br>	Super::<span class="hljs-built_in">GetLifetimeReplicatedProps</span>(OutLifetimeProps);<br>	<span class="hljs-built_in">DOREPLIFETIME</span>(ADerivedActor, TestReplicated); <span class="hljs-comment">// 注册同步变量</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <blockquote>
 <p>Demo中 <code>ADerivedActor::Tick</code>控制了每2秒打印一次属性 <code>TestReplicated</code>的值，以便观察数据变化。</p>
 </blockquote>
-<h3 id="ReplicatedUsing"><a href="#ReplicatedUsing" class="headerlink" title="ReplicatedUsing"></a>ReplicatedUsing</h3><p><code>ReplicatedUsing</code>属性需要自定义 <code>RepNotify</code>函数，当属性被复制时，客户端就会调用该函数。<code>RepNotify</code>支持参数，可以是值类型参数，也可以是常引用类型参数。参数的含义是属性复制前的值。也可以没有参数。</p>
+<h3 id="ReplicatedUsing"><a href="#ReplicatedUsing" class="headerlink" title="ReplicatedUsing"></a>ReplicatedUsing</h3><p><code>ReplicatedUsing</code>属性需要自定义 <code>RepNotify</code>函数，当<em>属性被复制时，客户端就会调用该函数</em>。<code>RepNotify</code>支持参数，可以是<strong>值类型</strong>参数，也可以是<strong>常引用类型</strong>参数。参数的含义是属性复制前的值。也可以没有参数。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// ADerivedActor.h</span><br><span class="hljs-comment">// 测试ReplicatedUsing属性,调用无参数的RepNotify方法</span><br><span class="hljs-built_in">UPROPERTY</span>(ReplicatedUsing=OnRep_TestReplicatedUsing)<br><span class="hljs-type">int</span> TestReplicatedUsing = <span class="hljs-number">0</span>;<br><span class="hljs-comment">// 测试ReplicatedUsing属性,调用参数为值类型的RepNotify方法</span><br><span class="hljs-built_in">UPROPERTY</span>(ReplicatedUsing=OnRep_TestReplicatedUsing_Value)<br><span class="hljs-type">int</span> TestReplicatedUsing_Value = <span class="hljs-number">0</span>;<br><span class="hljs-comment">// 测试ReplicatedUsing属性,调用参数为常引用的RepNotify方法</span><br><span class="hljs-built_in">UPROPERTY</span>(ReplicatedUsing=OnRep_TestReplicatedUsing_ConstRef)<br><span class="hljs-type">int</span> TestReplicatedUsing_ConstRef = <span class="hljs-number">0</span>;<br><br><span class="hljs-comment">// 分别定义三个RepNotify方法</span><br><span class="hljs-built_in">UFUNCTION</span>()<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">OnRep_TestReplicatedUsing</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">LOG_RED</span>(<span class="hljs-string">&quot;ADerivedActor::OnRep_TestReplicatedUsing Value:%d&quot;</span>, TestReplicatedUsing);<br>&#125;<br><span class="hljs-built_in">UFUNCTION</span>()<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">OnRep_TestReplicatedUsing_Value</span><span class="hljs-params">(<span class="hljs-type">int</span> LastValue)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<span class="hljs-comment">// 参数为修改前的值</span><br>	<span class="hljs-built_in">LOG_RED</span>(<span class="hljs-string">&quot;ADerivedActor::OnRep_TestReplicatedUsing_Value Value:%d LastValue:%d&quot;</span>, TestReplicatedUsing_Value, LastValue);<br>&#125;<br><span class="hljs-built_in">UFUNCTION</span>()<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">OnRep_TestReplicatedUsing_ConstRef</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; LastValue)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<span class="hljs-comment">// 参数为修改前的值</span><br>	<span class="hljs-built_in">LOG_RED</span>(<span class="hljs-string">&quot;ADerivedActor::OnRep_TestReplicatedUsing_ConstRef Value:%d LastValue:%d&quot;</span>, TestReplicatedUsing_ConstRef, LastValue);<br>&#125;<br><br><span class="hljs-comment">// ADerivedActor.cpp</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ADerivedActor::GetLifetimeReplicatedProps</span><span class="hljs-params">(TArray&lt;<span class="hljs-keyword">class</span> FLifetimeProperty&gt;&amp; OutLifetimeProps)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123; <span class="hljs-comment">// 注册需要同步的属性,该方法重写了Actor的方法</span><br>	Super::<span class="hljs-built_in">GetLifetimeReplicatedProps</span>(OutLifetimeProps);<br>	<span class="hljs-built_in">DOREPLIFETIME</span>(ADerivedActor, TestReplicatedUsing);<br>	<span class="hljs-built_in">DOREPLIFETIME</span>(ADerivedActor, TestReplicatedUsing_Value);<br>	<span class="hljs-built_in">DOREPLIFETIME</span>(ADerivedActor, TestReplicatedUsing_ConstRef);<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>可以为是否调用 <code>RepNotify</code>方法指定条件。在 <code>GetLifetimeReplicatedProps</code>方法中通过宏 <code>DOREPLIFETIME_CONDITION_NOTIFY</code>来指定 <code>RepNotify</code>的执行条件。UE内置了两个条件：</p>
@@ -468,15 +475,34 @@
 <h3 id="NotReplicated"><a href="#NotReplicated" class="headerlink" title="NotReplicated"></a>NotReplicated</h3><p>指定不复制的属性，在复制结构体中排除某个属性时很有用。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// ADerivedActor.h</span><br><span class="hljs-built_in">USTRUCT</span>()<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">FMyStruct</span><br>&#123;<br>	<span class="hljs-built_in">GENERATED_BODY</span>()<br><br>	<span class="hljs-built_in">UPROPERTY</span>()<br>	<span class="hljs-type">int</span> Param1 = <span class="hljs-number">0</span>;<br>	<span class="hljs-built_in">UPROPERTY</span>(NotReplicated) <span class="hljs-comment">// 指明Param2不复制</span><br>	<span class="hljs-type">int</span> Param2 = <span class="hljs-number">0</span>;<br>&#125;;<br><span class="hljs-comment">// 测试ReplicatedUsing属性,复制结构体,调用参数为常引用的RepNotify方法.结构体中的一个属性为NotReplicated</span><br><span class="hljs-built_in">UPROPERTY</span>(ReplicatedUsing=OnRep_TestStruct_ConstRef)<br>FMyStruct TestStruct; <span class="hljs-comment">// 虽然指定了FMyStruct结构需要复制，但其内部成员Param2不会被复制</span><br></code></pre></td></tr></table></figure>
 
+<h3 id="PushModel"><a href="#PushModel" class="headerlink" title="PushModel"></a>PushModel</h3><p>上述所讲的属性同步，服务器在特定的时间去判断每个需要复制的属性是否变化。使用 <code>PushModel</code>可以避免这种比较，在属性修改的地方，调用 <code>MARK_PROPERTY_DIRTY_FROM_NAME</code>标记该属性需要同步，则省略了属性是否变化的判断过程。</p>
+<p>要使用 <code>PushModel</code>，需要在 <code>GetLifetimeReplicatedProps</code>方法中使用宏 <code>DOREPLIFETIME_WITH_PARAMS_FAST</code>进行注册，宏的第三个参数为 <code>FDoRepLifetimeParams</code>结构对象：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">FDoRepLifetimeParams</span><br>&#123;<br>	<span class="hljs-comment">/** Replication Condition.  */</span><br>	ELifetimeCondition Condition = COND_None;<br>	<span class="hljs-comment">/** RepNotify Condition. */</span><br>	ELifetimeRepNotifyCondition RepNotifyCondition = REPNOTIFY_OnChanged;<br>	<span class="hljs-comment">/** Whether or not this property uses Push Model. See PushModel.h */</span><br>	<span class="hljs-type">bool</span> bIsPushBased = <span class="hljs-literal">false</span>;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>Condition：属性同步条件</li>
+<li>RepNotifyCondition：RepNotify的执行规则</li>
+<li>bIsPushBased：是否启用PushModel</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// ADerivedActor.h</span><br><span class="hljs-comment">// 测试PushModel</span><br><span class="hljs-built_in">UPROPERTY</span>(ReplicatedUsing=OnRep_TestReplicatedUsingPushModel)<br><span class="hljs-type">int</span> TestReplicatedUsingPushModel = <span class="hljs-number">0</span>;<br><span class="hljs-built_in">UFUNCTION</span>()<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">OnRep_TestReplicatedUsingPushModel</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span>;<br><br><span class="hljs-comment">// ADerivedActor.cpp</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ADerivedActor::DoFunc</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	++TestReplicatedUsingPushModel; <span class="hljs-comment">// 测试PushModel</span><br>	<span class="hljs-keyword">if</span> (<span class="hljs-number">0</span> == TestReplicatedUsingPushModel % <span class="hljs-number">2</span>)<br>	&#123; <span class="hljs-comment">// 偶数时，标记属性同步</span><br>		<span class="hljs-built_in">MARK_PROPERTY_DIRTY_FROM_NAME</span>(ADerivedActor, TestReplicatedUsingPushModel, <span class="hljs-keyword">this</span>);<br>	&#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ADerivedActor::GetLifetimeReplicatedProps</span><span class="hljs-params">(TArray&lt;<span class="hljs-keyword">class</span> FLifetimeProperty&gt;&amp; OutLifetimeProps)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123; <span class="hljs-comment">// 注册需要同步的属性</span><br>	Super::<span class="hljs-built_in">GetLifetimeReplicatedProps</span>(OutLifetimeProps);<br>	<span class="hljs-comment">// 使用Push Model</span><br>	FDoRepLifetimeParams SharedParams;<br>	SharedParams.bIsPushBased = <span class="hljs-literal">true</span>;<br>	<span class="hljs-built_in">DOREPLIFETIME_WITH_PARAMS_FAST</span>(ADerivedActor, TestReplicatedUsingPushModel, SharedParams);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：对于一个Actor，如果采用了 <code>PushModel</code>，那么所有的属性都需要以 <code>PushModel</code>的方式进行同步，否则会退化会常规情况。</p>
+</blockquote>
+<h3 id="数组同步"><a href="#数组同步" class="headerlink" title="数组同步"></a>数组同步</h3><blockquote>
+<p>只有 <code>TArray</code>支持同步，<code>TMap</code>和 <code>TSet</code>均不支持网络同步。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/640632055">UE4 网络同步框架介绍及使用 - 知乎</a></p>
 <h3 id="复制对象引用"><a href="#复制对象引用" class="headerlink" title="复制对象引用"></a>复制对象引用</h3><p>对象引用的复制由虚幻引擎的复制系统自动处理。如果你有复制的 UObject 属性，对该对象的引用会作为权威服务器分配的 FNetworkGUID 通过网络连接发送。服务器接着会向所有连接的客户端通知此分配。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// UEDemo_DSCharacter.h</span><br><span class="hljs-built_in">UPROPERTY</span>(Replicated)<br>ADerivedActor* DerivedActor; <span class="hljs-comment">// ADerivedActor为可复制，该引用标记为Replicated后，会自动复制该引用</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="属性复制宏汇总"><a href="#属性复制宏汇总" class="headerlink" title="属性复制宏汇总"></a>属性复制宏汇总</h3><p>下面介绍了UE中可用的<strong>属性复制宏</strong>，以及在什么方法中调用宏，关联的 <code>FRepPropertyDescriptor</code>是在编译时还是运行时构造，是否适用于数组。</p>
-<img src="/2024/12/25/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png" srcset="/img/loading.gif" lazyload class="" width="1734971853597">
+<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png" srcset="/img/loading.gif" lazyload class="" width="1734971853597">
 
 <h2 id="复制对象的执行顺序"><a href="#复制对象的执行顺序" class="headerlink" title="复制对象的执行顺序"></a>复制对象的执行顺序</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/zh-cn/unreal-engine/programming-network-multiplayer-games-for-unreal-engine">在虚幻引擎中制作在线多人游戏 | 虚幻引擎 5.5 文档 | Epic Developer Community</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/532869518">UE4网络同步-NetMode和NetRole - 知乎</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/640632055">UE4 网络同步框架介绍及使用 - 知乎</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bearchild.top/2022/04/10/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/%E7%BD%91%E7%BB%9C/%5BUE%5DPushModel%E5%B1%9E%E6%80%A7%E5%90%8C%E6%AD%A5/">[UE] PushModel 属性同步 | BearChild&#39;s Blog</a></p>
 
                 
               </div>
@@ -536,7 +562,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>【UE-DS】编写多人游戏-基础篇</div>
-      <div>http://example.com/2024/12/25/link/UE/DS/2_编写多人游戏/2_编写多人游戏/</div>
+      <div>http://example.com/2024/12/26/link/UE/DS/2_编写多人游戏/2_编写多人游戏/</div>
     </div>
     <div class="license-meta">
       
@@ -548,7 +574,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月25日</div>
+          <div>2024年12月26日</div>
         </div>
       
       
