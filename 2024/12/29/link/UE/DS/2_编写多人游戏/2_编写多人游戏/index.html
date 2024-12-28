@@ -21,32 +21,32 @@
   
     <meta name="description" content="编写多人游戏-基础篇 网络上UE网络同步开发相关资料非常多，本篇结合官方文档和网络上的优秀文章对UE多人游戏开发做一个相对全面的介绍。在文章最后，有列出所有的参考资料。  在UE中，多人游戏与单人游戏的唯一不同是网络同步相关的Actor在服务器和客户端各有一份，服务器端是主控，客户端一般是服务器的Actor的副本，一般有两种：Autonomous（客户端对其有操控权，如客户端所操控的Pawn）；S">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【UE-DS】编写多人游戏-基础篇">
-<meta property="og:url" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/index.html">
+<meta property="og:title" content="【UE-DS】编写多人游戏">
+<meta property="og:url" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
 <meta property="og:description" content="编写多人游戏-基础篇 网络上UE网络同步开发相关资料非常多，本篇结合官方文档和网络上的优秀文章对UE多人游戏开发做一个相对全面的介绍。在文章最后，有列出所有的参考资料。  在UE中，多人游戏与单人游戏的唯一不同是网络同步相关的Actor在服务器和客户端各有一份，服务器端是主控，客户端一般是服务器的Actor的副本，一般有两种：Autonomous（客户端对其有操控权，如客户端所操控的Pawn）；S">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
-<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png">
-<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png">
-<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png">
-<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png">
-<meta property="og:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png">
-<meta property="article:published_time" content="2024-12-25T16:31:00.000Z">
-<meta property="article:modified_time" content="2024-12-28T14:17:51.274Z">
+<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
+<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png">
+<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png">
+<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png">
+<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png">
+<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png">
+<meta property="article:published_time" content="2024-12-28T17:43:53.000Z">
+<meta property="article:modified_time" content="2024-12-28T17:43:57.834Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
 <meta property="article:tag" content="网络开发">
 <meta property="article:tag" content="网络同步">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
+<meta name="twitter:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>【UE-DS】编写多人游戏-基础篇 - LiXiang&#39;s Blog</title>
+  <title>【UE-DS】编写多人游戏 - LiXiang&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -212,7 +212,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="【UE-DS】编写多人游戏-基础篇"></span>
+            <span id="subtitle" data-typed-text="【UE-DS】编写多人游戏"></span>
           
         </div>
 
@@ -276,7 +276,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">【UE-DS】编写多人游戏-基础篇</h1>
+            <h1 id="seo-header">【UE-DS】编写多人游戏</h1>
             
             
               <div class="markdown-body">
@@ -299,17 +299,17 @@
 <p><em>本篇文章提到的<strong>服务器</strong>指的是<strong>DedicatedServer</strong>或<strong>ListenServer</strong>，后文不在赘述</em></p>
 </blockquote>
 <p>这对<strong>Actor复制</strong>、<strong>属性复制</strong>、<strong>RPC</strong>来说很重要。</p>
-<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png" srcset="/img/loading.gif" lazyload class="" title="ActorOwnerAndOwningActor">
+<img src="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png" srcset="/img/loading.gif" lazyload class="" title="ActorOwnerAndOwningActor">
 
 <p>如上图所示，在客户端1上，你的输入将在 <code>PlayerController1</code>中处理，然后传达给 <code>Pawn1</code>。<br>当客户端1连接到服务器时，在服务器上会建立网络连接 <code>NetConnection1</code>并创建 <code>PlayerControllorS1</code>。<code>PawnS1</code>由 <code>PlayerControllerS1</code>拥有。<code>PawnS1</code>的所属连接是 <code>NetConnection1</code>，这是 <code>PlayerControllerS1</code>的所属连接。</p>
 <h2 id="网络模式和身份"><a href="#网络模式和身份" class="headerlink" title="网络模式和身份"></a>网络模式和身份</h2><h3 id="游戏运行模式"><a href="#游戏运行模式" class="headerlink" title="游戏运行模式"></a>游戏运行模式</h3><p>在编辑器中，通常有三种模式运行：</p>
-<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png" srcset="/img/loading.gif" lazyload class="" width="1734535616615">
+<img src="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png" srcset="/img/loading.gif" lazyload class="" width="1734535616615">
 
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// LevelEditorPlaySettings.h</span><br><span class="hljs-built_in">UENUM</span>()<br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">EPlayNetMode</span> : <span class="hljs-type">int</span><br>&#123;<br>	<span class="hljs-function">PIE_Standalone <span class="hljs-title">UMETA</span><span class="hljs-params">(DisplayName=<span class="hljs-string">&quot;Play Standalone&quot;</span>)</span>,</span><br><span class="hljs-function">	PIE_ListenServer <span class="hljs-title">UMETA</span><span class="hljs-params">(DisplayName=<span class="hljs-string">&quot;Play As Listen Server&quot;</span>)</span>,</span><br><span class="hljs-function">	PIE_Client <span class="hljs-title">UMETA</span><span class="hljs-params">(DisplayName=<span class="hljs-string">&quot;Play As Client&quot;</span>)</span>,</span><br><span class="hljs-function">&#125;</span>;<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li><p>PIE_Standalone<br>将启动一个独立进程游戏。此操作不会创建专用服务器，也不会自动连接到一个服务器。也就是说启动一个单机游戏。<br>打开 <code>bLaunchSeparateServer</code>选项，则可以创建Server。客户端需要主动连接Server。</p>
-<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png" srcset="/img/loading.gif" lazyload class="" width="1735055074459"></li>
+<img src="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png" srcset="/img/loading.gif" lazyload class="" width="1735055074459"></li>
 <li><p>PIE_Client<br>编辑器将用作客户端，打开界面是一个客户端，跑的是客户端代码。当设置多玩家时，多个窗口代表多个客户端。同时UE还会启动一个Server。这个Server是否与编辑器处于同一进程，由 <code>RunUnderOneProcess</code>设置控制。</p>
 
 <p>如果勾选该设置，Server会在UE进程下，否则Server会单独启一个进程来创建。<br>这个模式下，启动的Client会自动连接Server</p>
@@ -387,7 +387,7 @@
 <h2 id="RPC及使用"><a href="#RPC及使用" class="headerlink" title="RPC及使用"></a>RPC及使用</h2><p>RPC（远程过程调用）是在本地调用但在其他及其上远程执行的函数。</p>
 <p>要将一个函数声明为RPC，需要将 <code>Server</code>、<code>Client</code>或 <code>NetMulticast</code>关键字添加到UFUNCTION声明中。RPC函数默认是不可靠的，可以指定 <code>Reliable</code>关键字使其必然会被执行。</p>
 <p>三种RPC的声明方式根据Actor的所有权不同，决定了RPC将在哪里执行，如下表：</p>
-<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png" srcset="/img/loading.gif" lazyload class="" width="1734881609543">
+<img src="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png" srcset="/img/loading.gif" lazyload class="" width="1734881609543">
 
 <blockquote>
 <p>以下例子是基于第一篇文章的Demo(<a target="_blank" rel="noopener" href="https://gitee.com/lixiang2202/uedemo_ds">lixiang2202&#x2F;UEDemo_DS</a>)进行扩展<br>下述代码在 <code>AUEDemo_DSCharacter</code>类中实现了三个RPC接口，其实现是打印了参数Tag：</p>
@@ -418,7 +418,7 @@
 </ul>
 </li>
 </ul>
-<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png" srcset="/img/loading.gif" lazyload class="" width="1734883151880">
+<img src="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png" srcset="/img/loading.gif" lazyload class="" width="1734883151880">
 
 <blockquote>
 <p>注意：不要在BeginPlay里调用RPC，在同步时，RPC要早于Actor的同步，如果在BeginPlay中调用RPC，当RPC请求到达客户端时Actor还未生成。</p>
@@ -494,7 +494,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// UEDemo_DSCharacter.h</span><br><span class="hljs-built_in">UPROPERTY</span>(Replicated)<br>ADerivedActor* DerivedActor; <span class="hljs-comment">// ADerivedActor为可复制，该引用标记为Replicated后，会自动复制该引用</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="属性复制宏汇总"><a href="#属性复制宏汇总" class="headerlink" title="属性复制宏汇总"></a>属性复制宏汇总</h3><p>下面介绍了UE中可用的<strong>属性复制宏</strong>，以及在什么方法中调用宏，关联的 <code>FRepPropertyDescriptor</code>是在编译时还是运行时构造，是否适用于数组。</p>
-<img src="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png" srcset="/img/loading.gif" lazyload class="" width="1734971853597">
+<img src="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png" srcset="/img/loading.gif" lazyload class="" width="1734971853597">
 
 <h2 id="Actor组件复制"><a href="#Actor组件复制" class="headerlink" title="Actor组件复制"></a>Actor组件复制</h2><p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/zh-cn/unreal-engine/replicating-actor-components-in-unreal-engine">Replicating Actor Components in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533390170">UE4网络同步-Actor Component Object同步 - 知乎</a></p>
@@ -563,8 +563,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>【UE-DS】编写多人游戏-基础篇</div>
-      <div>http://example.com/2024/12/26/link/UE/DS/2_编写多人游戏/2_编写多人游戏/</div>
+      <div>【UE-DS】编写多人游戏</div>
+      <div>http://example.com/2024/12/29/link/UE/DS/2_编写多人游戏/2_编写多人游戏/</div>
     </div>
     <div class="license-meta">
       
@@ -576,7 +576,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月26日</div>
+          <div>2024年12月29日</div>
         </div>
       
       
@@ -608,7 +608,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/28/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9D%97/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/" title="【UE-DS】UE网络框架">
+                      <a href="/2024/12/29/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9D%97/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/" title="【UE-DS】UE网络框架">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">【UE-DS】UE网络框架</span>
                         <span class="visible-mobile">上一篇</span>

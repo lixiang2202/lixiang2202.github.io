@@ -22,12 +22,12 @@
     <meta name="description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念进行详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Auth">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】UE网络框架">
-<meta property="og:url" content="http://example.com/2024/12/28/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9D%97/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:url" content="http://example.com/2024/12/29/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9D%97/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
 <meta property="og:description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念进行详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Auth">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-12-28T13:48:50.000Z">
-<meta property="article:modified_time" content="2024-12-28T17:38:42.626Z">
+<meta property="article:published_time" content="2024-12-28T17:44:05.000Z">
+<meta property="article:modified_time" content="2024-12-28T17:44:07.386Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
@@ -311,15 +311,15 @@
 <p><strong>PackageMapClient，负责UObject的序列化、反序列化以及Actor和NetworkGUID的双向映射，每一个Connection都有一个PackageMapClient对象</strong></p>
 </blockquote>
 <ul>
-<li>调用<code>UPackageMapClient::SerializeObject</code>，为其赋予一个新的<code>NetworkGUID</code>(<code>FNetGUIDCache::GetOrAssignNetGUID</code>)，并将映射关系存到<code>PackageMapClient</code>中。<blockquote>
+<li>调用 <code>UPackageMapClient::SerializeObject</code>，为其赋予一个新的 <code>NetworkGUID</code>(<code>FNetGUIDCache::GetOrAssignNetGUID</code>)，并将映射关系存到 <code>PackageMapClient</code>中。<blockquote>
 <p><strong>NetworkGUID，网络相关的全局唯一标示符。复制的Actor在服务器、客户端都有一致的NetworkGUID，由此来进行关联</strong></p>
 </blockquote>
 </li>
-<li>调用<code>UPackageMapClient::ExportNetGUID</code>，把GUID和Archetype（CDO Path）信息加入Bunch，以便让客户端解包时可以通过信息创建对象。<blockquote>
+<li>调用 <code>UPackageMapClient::ExportNetGUID</code>，把GUID和Archetype（CDO Path）信息加入Bunch，以便让客户端解包时可以通过信息创建对象。<blockquote>
 <p><strong>Bunch, 在CS网络连接的通道之间发送的数据。当一个连接接收到一个数据包时，该数据包将被分解乘单独的Bunch，这些Bunche被传递到单独的通道以进一步处理。</strong> 一个Packet可以不包含Bunch、单个Bunch或者多个Bunch。当一个Bunch太大时，在传输之前会把它切成许多小Bunch，这些Bunch将被标记为Partiallnitial、Partial或PartialFinal。利用这些信息，在接收端重新组装Bunch。</p>
 </blockquote>
 </li>
-<li>序列化Actor的Location、Rotation、Scale、Velocity。<br>调用<code>ConditionallySerializeQuantizedVector</code>和<code>Rotation.NetSerialize</code>。</li>
+<li>序列化Actor的Location、Rotation、Scale、Velocity。<br>调用 <code>ConditionallySerializeQuantizedVector</code>和 <code>Rotation.NetSerialize</code>。</li>
 </ul>
 </li>
 </ul>
@@ -396,7 +396,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>【UE-DS】UE网络框架</div>
-      <div>http://example.com/2024/12/28/link/UE/DS/3_UE网络模块/3_UE网络框架/</div>
+      <div>http://example.com/2024/12/29/link/UE/DS/3_UE网络模块/3_UE网络框架/</div>
     </div>
     <div class="license-meta">
       
@@ -408,7 +408,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月28日</div>
+          <div>2024年12月29日</div>
         </div>
       
       
@@ -444,8 +444,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/12/26/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/" title="【UE-DS】编写多人游戏-基础篇">
-                        <span class="hidden-mobile">【UE-DS】编写多人游戏-基础篇</span>
+                      <a href="/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/" title="【UE-DS】编写多人游戏">
+                        <span class="hidden-mobile">【UE-DS】编写多人游戏</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
