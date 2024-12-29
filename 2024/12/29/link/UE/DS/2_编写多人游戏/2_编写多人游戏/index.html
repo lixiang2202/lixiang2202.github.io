@@ -22,25 +22,25 @@
     <meta name="description" content="编写多人游戏-基础篇 网络上UE网络同步开发相关资料非常多，本篇结合官方文档和网络上的优秀文章对UE多人游戏开发做一个相对全面的介绍。在文章最后，有列出所有的参考资料。  在UE中，多人游戏与单人游戏的唯一不同是网络同步相关的Actor在服务器和客户端各有一份，服务器端是主控，客户端一般是服务器的Actor的副本，一般有两种：Autonomous（客户端对其有操控权，如客户端所操控的Pawn）；S">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】编写多人游戏">
-<meta property="og:url" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/index.html">
+<meta property="og:url" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
 <meta property="og:description" content="编写多人游戏-基础篇 网络上UE网络同步开发相关资料非常多，本篇结合官方文档和网络上的优秀文章对UE多人游戏开发做一个相对全面的介绍。在文章最后，有列出所有的参考资料。  在UE中，多人游戏与单人游戏的唯一不同是网络同步相关的Actor在服务器和客户端各有一份，服务器端是主控，客户端一般是服务器的Actor的副本，一般有两种：Autonomous（客户端对其有操控权，如客户端所操控的Pawn）；S">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
-<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png">
-<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png">
-<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png">
-<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png">
-<meta property="og:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734535616615.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1735055074459.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734881609543.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734883151880.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/1734971853597.png">
 <meta property="article:published_time" content="2024-12-28T17:43:53.000Z">
-<meta property="article:modified_time" content="2024-12-29T14:52:19.295Z">
+<meta property="article:modified_time" content="2024-12-29T16:37:57.554Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
 <meta property="article:tag" content="网络开发">
 <meta property="article:tag" content="网络同步">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
+<meta name="twitter:image" content="https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/2_%E7%BC%96%E5%86%99%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/ActorOwnerAndOwningActor.dio.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -84,7 +84,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":30,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"lixiang2202.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":30,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -528,7 +528,7 @@
   
     <span>></span>
     
-  <a href="/categories/UE/Dedicated-Server/" class="category-chain-item">Dedicated Server</a>
+  <a href="/categories/UE/UE%E5%A4%9A%E4%BA%BA%E6%B8%B8%E6%88%8F/" class="category-chain-item">UE多人游戏</a>
   
   
 
@@ -564,7 +564,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>【UE-DS】编写多人游戏</div>
-      <div>http://example.com/2024/12/29/link/UE/DS/2_编写多人游戏/2_编写多人游戏/</div>
+      <div>https://lixiang2202.github.io/2024/12/29/link/UE/DS/2_编写多人游戏/2_编写多人游戏/</div>
     </div>
     <div class="license-meta">
       
