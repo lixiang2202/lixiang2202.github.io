@@ -19,15 +19,16 @@
   <meta name="author" content="Li Xiang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念进行详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Auth">
+    <meta name="description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】UE网络框架">
-<meta property="og:url" content="http://example.com/2024/12/29/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9D%97/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:url" content="http://example.com/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
-<meta property="og:description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念进行详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Auth">
+<meta property="og:description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-12-28T17:44:05.000Z">
-<meta property="article:modified_time" content="2024-12-28T17:44:07.386Z">
+<meta property="og:image" content="http://example.com/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
+<meta property="article:published_time" content="2024-12-29T16:32:42.000Z">
+<meta property="article:modified_time" content="2024-12-29T16:32:43.664Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
@@ -35,6 +36,7 @@
 <meta property="article:tag" content="Actor复制">
 <meta property="article:tag" content="RPC">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -222,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          1.8k 字
         
       </span>
     
@@ -233,7 +235,7 @@
         
         
         
-          13 分钟
+          15 分钟
         
       </span>
     
@@ -275,55 +277,74 @@
             
               <div class="markdown-body">
                 
-                <h1 id="UE网络框架"><a href="#UE网络框架" class="headerlink" title="UE网络框架"></a>UE网络框架</h1><p>本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念进行详细的说明。</p>
+                <h1 id="UE网络框架"><a href="#UE网络框架" class="headerlink" title="UE网络框架"></a>UE网络框架</h1><p>本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明。</p>
 <p>在文章最后，将会对UE网络框架做完整的、总结性的介绍。</p>
 <blockquote>
 <p>本篇内容的实例代码，可<a target="_blank" rel="noopener" href="https://gitee.com/lixiang2202/uedemo_ds">点击</a>查看。</p>
 </blockquote>
 <h2 id="Actor同步"><a href="#Actor同步" class="headerlink" title="Actor同步"></a>Actor同步</h2><p>在服务器创建一个复制（<code>bReplicates = true</code>）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Authority Actor对应起来。</p>
 <blockquote>
-<p><strong>网络同步流程的起点来自于 <code>UNetDriver</code>对象，该对象是网络处理的核心，负责管理UNetConnections:</strong></p>
+<p><em><strong>网络同步框架的核心是 <code>UNetDriver</code>对象，该对象负责管理UNetConnections:</strong></em></p>
 <ul>
 <li>服务器NetDriver将维护一个NetConnects列表，每个连接代表一个连接的玩家，负责复制Actor数据</li>
 <li>客户端NetDriver管理连接到服务器的单个连接</li>
 </ul>
 </blockquote>
 <h3 id="服务器发送Actor"><a href="#服务器发送Actor" class="headerlink" title="服务器发送Actor"></a>服务器发送Actor</h3><ul>
-<li><p>UNetDriver::TickFlush<br>网络同步的Tick。如果是服务器端，并且已经有连接的ClientConnections，则会执行 <code>UNetDriver::ServerReplicateActors</code></p>
+<li><p><strong>UNetDriver::TickFlush</strong><br>服务器在 <code>UNetDriver::TickFlush</code>里，每一帧都会去处理同步Actor相关的处理。如果是服务器端，并且已经有连接的ClientConnections，则会执行 <code>UNetDriver::ServerReplicateActors </code></p>
+<blockquote>
+<p><em><strong>UNetConnections，表示每一条具体的客户端与服务器之间的连接。</strong></em></p>
+<blockquote>
+<p>在服务器上，每一个客户端到服务器的连接(<code>ClientConnection</code>)定义在  <code>UNetDriver::ClientConnections </code>，是一个数组。<br>在客户端上，该客户端到服务器的连接(<code>ServerConnection</code>)定义在 <code>UNetDriver::ServerConnection</code>，只有一个值。</p>
+</blockquote>
+</blockquote>
 </li>
-<li><p>UNetDriver::ServerReplicateActors</p>
+<li><p><strong>UNetDriver::ServerReplicateActors</strong></p>
 <ul>
-<li>执行 <code>ServerReplicateActors_PrepConnections</code>来获取当帧可以tick的Client数量（会考虑是否存在有效的客户端连接，及限制每帧最多tick多少Actor等）</li>
-<li>通过 <code>ServerReplicateActors_BuildConsiderList</code>来获取所有需要复制的Actor列表（会考虑Actor的有效性、可见性等）。</li>
+<li>执行 <code>ServerReplicateActors_PrepConnections</code>来获取当帧可以tick的Client数量，更新连接的ViewTarget。（会考虑是否存在有效的客户端连接，及限制每帧最多tick多少Actor等）</li>
+<li>通过 <code>ServerReplicateActors_BuildConsiderList</code>来获取所有需要复制的Actor列表 <code>ConsiderList</code>（会考虑Actor的有效性、同步频率、休眠状态、可见性等）。</li>
 <li>遍历所有ClientConnections，调用 <code>ServerReplicateActors_PrioritizeActors</code>来对当前ClientConnection下的所有复制Actor进行排序，然后调用 <code>ServerReplicateActors_ProcessPrioritizedActorsRange</code>去处理Actor的同步</li>
 </ul>
 </li>
-<li><p>UNetDriver::ServerReplicateActors_ProcessPrioritizedActorsRange<br>在该方法中，遍历Actor，如果发现了新创建了需要同步的Actor，则为其创建UActorChannel。</p>
+<li><p><strong>UNetDriver::ServerReplicateActors_ProcessPrioritizedActorsRange</strong><br>在该方法中，遍历Actor，如果发现了新创建了需要同步的Actor，则为其创建UActorChannel。</p>
 <blockquote>
-<p><strong>UActorChannel，用于管理复制Actor的创建和生命周期，在一个连接上的数据和处理。</strong></p>
+<p><em><strong>UActorChannel，用于管理复制Actor的创建和生命周期，在一个连接上的数据和处理。</strong></em></p>
 </blockquote>
 <p>然后调用 <code>UActorChannel::ReplicateActor</code>进行Actor的复制。下述为源码的简化版本：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">int32 <span class="hljs-title">UNetDriver::ServerReplicateActors_ProcessPrioritizedActorsRange</span><span class="hljs-params">( UNetConnection* Connection, <span class="hljs-type">const</span> TArray&lt;FNetViewer&gt;&amp; ConnectionViewers, FActorPriority** PriorityActors, <span class="hljs-type">const</span> TInterval&lt;int32&gt;&amp; ActorsIndexRange, int32&amp; OutUpdated, <span class="hljs-type">bool</span> bIgnoreSaturation )</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">for</span> ( int32 j = ActorsIndexRange.Min; j &lt; ActorsIndexRange.Min + ActorsIndexRange.Max; j++ )<br>    &#123; <span class="hljs-comment">// 遍历所有需要复制的Actor</span><br>        FNetworkObjectInfo*	ActorInfo = PriorityActors[j]-&gt;ActorInfo;<br>        <span class="hljs-comment">// Normal actor replication</span><br>        UActorChannel* Channel = PriorityActors[j]-&gt;Channel;<br>        <span class="hljs-keyword">if</span> ( !Channel || Channel-&gt;Actor ) <span class="hljs-comment">//make sure didn&#x27;t just close this channel</span><br>        &#123; <br>            <span class="hljs-keyword">if</span> ( Channel == <span class="hljs-literal">NULL</span> &amp;&amp; GuidCache-&gt;<span class="hljs-built_in">SupportsObject</span>( Actor-&gt;<span class="hljs-built_in">GetClass</span>() ) &amp;&amp; GuidCache-&gt;<span class="hljs-built_in">SupportsObject</span>( Actor-&gt;<span class="hljs-built_in">IsNetStartupActor</span>() ? Actor : Actor-&gt;<span class="hljs-built_in">GetArchetype</span>() ) )<br>            &#123; <span class="hljs-comment">// 没有UActorChannel，则为其创建一个UActorChannel</span><br>                <span class="hljs-comment">// Create a new channel for this actor.</span><br>                Channel = (UActorChannel*)Connection-&gt;<span class="hljs-built_in">CreateChannelByName</span>( NAME_Actor, EChannelCreateFlags::OpenedLocally );<br>                <span class="hljs-keyword">if</span> ( Channel )<br>                &#123;<br>                Channel-&gt;<span class="hljs-built_in">SetChannelActor</span>(Actor, ESetChannelActorFlags::None);<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">if</span> ( Channel )<br>            &#123; <span class="hljs-comment">// 处理Actor复制</span><br>                <span class="hljs-keyword">if</span> ( Channel-&gt;<span class="hljs-built_in">ReplicateActor</span>() )<br>                &#123;<br>                    ActorUpdatesThisConnectionSent++;<br>                    ActorInfo-&gt;LastNetReplicateTime = World-&gt;TimeSeconds;<br>                &#125;<br>                ActorUpdatesThisConnection++;<br>                OutUpdated++;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> ActorsIndexRange.Max;<br>&#125;<br></code></pre></td></tr></table></figure></li>
-<li><p>UActorChannel::ReplicateActor<br>通过 <code>PackageMapClient::SerializeNewActor</code>对其进行序列化。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">int32 <span class="hljs-title">UNetDriver::ServerReplicateActors_ProcessPrioritizedActorsRange</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">  UNetConnection* Connection, </span></span><br><span class="hljs-params"><span class="hljs-function">  <span class="hljs-type">const</span> TArray&lt;FNetViewer&gt;&amp; ConnectionViewers, </span></span><br><span class="hljs-params"><span class="hljs-function">  FActorPriority** PriorityActors, </span></span><br><span class="hljs-params"><span class="hljs-function">  <span class="hljs-type">const</span> TInterval&lt;int32&gt;&amp; ActorsIndexRange, </span></span><br><span class="hljs-params"><span class="hljs-function">  int32&amp; OutUpdated, <span class="hljs-type">bool</span> bIgnoreSaturation )</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">for</span> ( int32 j = ActorsIndexRange.Min; j &lt; ActorsIndexRange.Min + ActorsIndexRange.Max; j++ )<br>  &#123; <span class="hljs-comment">// 遍历所有需要复制的Actor</span><br>    FNetworkObjectInfo*	ActorInfo = PriorityActors[j]-&gt;ActorInfo;<br>    <span class="hljs-comment">// Normal actor replication</span><br>    UActorChannel* Channel = PriorityActors[j]-&gt;Channel;<br>    <span class="hljs-keyword">if</span> ( !Channel || Channel-&gt;Actor ) <span class="hljs-comment">//make sure didn&#x27;t just close this channel</span><br>    &#123; <br>      <span class="hljs-keyword">if</span> ( Channel == <span class="hljs-literal">NULL</span> <br>      &amp;&amp; GuidCache-&gt;<span class="hljs-built_in">SupportsObject</span>( Actor-&gt;<span class="hljs-built_in">GetClass</span>() ) <br>      &amp;&amp; GuidCache-&gt;<span class="hljs-built_in">SupportsObject</span>( Actor-&gt;<span class="hljs-built_in">IsNetStartupActor</span>() ? Actor : Actor-&gt;<span class="hljs-built_in">GetArchetype</span>() ) )<br>      &#123; <span class="hljs-comment">// 没有UActorChannel，则为其创建一个UActorChannel</span><br>        <span class="hljs-comment">// Create a new channel for this actor.</span><br>        Channel = (UActorChannel*)Connection-&gt;<span class="hljs-built_in">CreateChannelByName</span>( NAME_Actor, EChannelCreateFlags::OpenedLocally );<br>        <span class="hljs-keyword">if</span> ( Channel )<br>        &#123;<br>          Channel-&gt;<span class="hljs-built_in">SetChannelActor</span>(Actor, ESetChannelActorFlags::None);<br>        &#125;<br>      &#125;<br>      <span class="hljs-keyword">if</span> ( Channel )<br>      &#123; <span class="hljs-comment">// 处理Actor复制</span><br>        <span class="hljs-keyword">if</span> ( Channel-&gt;<span class="hljs-built_in">ReplicateActor</span>() )<br>        &#123;<br>          ActorUpdatesThisConnectionSent++;<br>          ActorInfo-&gt;LastNetReplicateTime = World-&gt;TimeSeconds;<br>        &#125;<br>        ActorUpdatesThisConnection++;<br>        OutUpdated++;<br>      &#125;<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> ActorsIndexRange.Max;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p><strong>UActorChannel::ReplicateActor</strong><br>通过 <code>PackageMapClient::SerializeNewActor</code>对其进行序列化。</p>
 </li>
-<li><p>PackageMapClient::SerializeNewActor</p>
+<li><p><strong>PackageMapClient::SerializeNewActor</strong></p>
 <blockquote>
-<p><strong>PackageMapClient，负责UObject的序列化、反序列化以及Actor和NetworkGUID的双向映射，每一个Connection都有一个PackageMapClient对象</strong></p>
+<p><em><strong>PackageMapClient，负责UObject的序列化、反序列化以及Actor和NetworkGUID的双向映射，每一个Connection都有一个PackageMapClient对象</strong></em></p>
 </blockquote>
 <ul>
-<li>调用 <code>UPackageMapClient::SerializeObject</code>，为其赋予一个新的 <code>NetworkGUID</code>(<code>FNetGUIDCache::GetOrAssignNetGUID</code>)，并将映射关系存到 <code>PackageMapClient</code>中。<blockquote>
-<p><strong>NetworkGUID，网络相关的全局唯一标示符。复制的Actor在服务器、客户端都有一致的NetworkGUID，由此来进行关联</strong></p>
+<li><p>调用 <code>UPackageMapClient::SerializeObject</code>，为其赋予一个新的 <code>NetworkGUID</code>(<code>FNetGUIDCache::GetOrAssignNetGUID</code>)，并将映射关系存到 <code>PackageMapClient</code>中。</p>
+<blockquote>
+<p><em><strong>NetworkGUID，网络相关的全局唯一标示符。</strong></em><br>复制的Actor在服务器、客户端都有一致的NetworkGUID，由此来进行关联</p>
 </blockquote>
 </li>
-<li>调用 <code>UPackageMapClient::ExportNetGUID</code>，把GUID和Archetype（CDO Path）信息加入Bunch，以便让客户端解包时可以通过信息创建对象。<blockquote>
-<p><strong>Bunch, 在CS网络连接的通道之间发送的数据。当一个连接接收到一个数据包时，该数据包将被分解乘单独的Bunch，这些Bunche被传递到单独的通道以进一步处理。</strong> 一个Packet可以不包含Bunch、单个Bunch或者多个Bunch。当一个Bunch太大时，在传输之前会把它切成许多小Bunch，这些Bunch将被标记为Partiallnitial、Partial或PartialFinal。利用这些信息，在接收端重新组装Bunch。</p>
+<li><p>调用 <code>UPackageMapClient::ExportNetGUID</code>，把GUID和Archetype（CDO Path）信息加入Bunch，以便让客户端解包时可以通过信息创建对象。</p>
+<blockquote>
+<p><em><strong>Bunch, 在CS网络连接的通道之间发送的数据。当一个连接接收到一个数据包时，该数据包将被分解成单独的Bunch，这些Bunche被传递到单独的通道以进一步处理。</strong></em><br>一个Packet可以不包含Bunch、单个Bunch或者多个Bunch。当一个Bunch太大时，在传输之前会把它切成许多小Bunch，这些Bunch将被标记为Partiallnitial、Partial或PartialFinal。利用这些信息，在接收端重新组装Bunch。</p>
 </blockquote>
 </li>
-<li>序列化Actor的Location、Rotation、Scale、Velocity。<br>调用 <code>ConditionallySerializeQuantizedVector</code>和 <code>Rotation.NetSerialize</code>。</li>
-</ul>
+<li><p>调用 <code>FObjectReplicator::ReplicateProperties</code>进行属性复制<br><em>这部分内容比较独立且复杂，本节仅对Actor的同步做分析，属性复制的内容将在后续【属性同步】中详解。</em></p>
+</li>
+<li><p>序列化Actor的Location、Rotation、Scale、Velocity。<br>调用 <code>ConditionallySerializeQuantizedVector</code>和 <code>Rotation.NetSerialize</code>。</p>
 </li>
 </ul>
-<h3 id="客户端接収Actor"><a href="#客户端接収Actor" class="headerlink" title="客户端接収Actor"></a>客户端接収Actor</h3><h2 id="属性同步"><a href="#属性同步" class="headerlink" title="属性同步"></a>属性同步</h2><h2 id="RPC原理"><a href="#RPC原理" class="headerlink" title="RPC原理"></a>RPC原理</h2><h2 id="网络同步框架"><a href="#网络同步框架" class="headerlink" title="网络同步框架"></a>网络同步框架</h2><h3 id="核心类图"><a href="#核心类图" class="headerlink" title="核心类图"></a>核心类图</h3><p>【类图】</p>
+</li>
+<li><p><strong>UChannel::SendBunch</strong><br>发送Bunch。在这个过程中如果Bunch过大，则会进行分割。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// This is the max number of bits we can have in a single bunch</span><br><span class="hljs-type">const</span> int64 MAX_SINGLE_BUNCH_SIZE_BITS  = Connection-&gt;<span class="hljs-built_in">GetMaxSingleBunchSizeBits</span>();<br><span class="hljs-comment">// Max bytes we&#x27;ll put in a partial bunch</span><br><span class="hljs-type">const</span> int64 MAX_SINGLE_BUNCH_SIZE_BYTES = MAX_SINGLE_BUNCH_SIZE_BITS / <span class="hljs-number">8</span>;<br><span class="hljs-comment">// Max bits will put in a partial bunch (byte aligned, we dont want to deal with partial bytes in the partial bunches)</span><br><span class="hljs-type">const</span> int64 MAX_PARTIAL_BUNCH_SIZE_BITS = MAX_SINGLE_BUNCH_SIZE_BYTES * <span class="hljs-number">8</span>;<br>TArray&lt;FOutBunch*&gt;&amp; OutgoingBunches = Connection-&gt;<span class="hljs-built_in">GetOutgoingBunches</span>();<br>OutgoingBunches.<span class="hljs-built_in">Reset</span>();<br><span class="hljs-keyword">if</span>( Bunch-&gt;<span class="hljs-built_in">GetNumBits</span>() &gt; MAX_SINGLE_BUNCH_SIZE_BITS )<br>&#123;<br>	uint8 *data = Bunch-&gt;<span class="hljs-built_in">GetData</span>();<br>	int64 bitsLeft = Bunch-&gt;<span class="hljs-built_in">GetNumBits</span>();<br>	<span class="hljs-keyword">while</span>(bitsLeft &gt; <span class="hljs-number">0</span>)<br>	&#123;<br>		FOutBunch * PartialBunch = <span class="hljs-keyword">new</span> <span class="hljs-built_in">FOutBunch</span>(<span class="hljs-keyword">this</span>, <span class="hljs-literal">false</span>);<br>		int64 bitsThisBunch = FMath::<span class="hljs-built_in">Min</span>&lt;int64&gt;(bitsLeft, MAX_PARTIAL_BUNCH_SIZE_BITS);<br>		PartialBunch-&gt;<span class="hljs-built_in">SerializeBits</span>(data, bitsThisBunch);<br>		OutgoingBunches.<span class="hljs-built_in">Add</span>(PartialBunch);<br>		bitsLeft -= bitsThisBunch;<br>		data += (bitsThisBunch &gt;&gt; <span class="hljs-number">3</span>);<br>	&#125;<br>&#125;<br><span class="hljs-keyword">else</span><br>&#123;<br>	OutgoingBunches.<span class="hljs-built_in">Add</span>(Bunch);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>后续流程为：<code>UChannel::SendRawBunch</code>-&gt;<code>UNetConnection::SendRawBunch</code>，进行包头和包体的封装。并调用 <code>UNetConnection::FlushNet</code>处理数据的发送。</p>
+</li>
+<li><p><strong>UNetConnection::FlushNet</strong><br>刷新所有待发送的数据，将其合并到一个数据包中通过 <code>LowLevelSend</code>进行发送。最终调用到 <code>Socket::Send()</code></p>
+</li>
+</ul>
+<h3 id="客户端接収Actor"><a href="#客户端接収Actor" class="headerlink" title="客户端接収Actor"></a>客户端接収Actor</h3><h2 id="属性同步"><a href="#属性同步" class="headerlink" title="属性同步"></a>属性同步</h2><h2 id="RPC原理"><a href="#RPC原理" class="headerlink" title="RPC原理"></a>RPC原理</h2><h2 id="网络同步框架"><a href="#网络同步框架" class="headerlink" title="网络同步框架"></a>网络同步框架</h2><h3 id="核心类图"><a href="#核心类图" class="headerlink" title="核心类图"></a>核心类图</h3><img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png" srcset="/img/loading.gif" lazyload class="" title="核心类图">
+
 <ul>
 <li>NetDriver<br>网络处理的核心，负责管理UNetConnections。<br>服务器NetDriver将维护一个NetConnects列表，每个连接代表一个连接的玩家，负责复制Actor数据<br>客户端NetDriver管理连接到服务器的单个连接</li>
 <li>NetConnection<br>在服务器和客户端上，NetDriver负责接收来自网络的数据包并将这些数据包传递给适当的NetConnection</li>
@@ -396,7 +417,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>【UE-DS】UE网络框架</div>
-      <div>http://example.com/2024/12/29/link/UE/DS/3_UE网络模块/3_UE网络框架/</div>
+      <div>http://example.com/2024/12/30/link/UE/DS/3_UE网络框架/3_UE网络框架/</div>
     </div>
     <div class="license-meta">
       
@@ -408,7 +429,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月29日</div>
+          <div>2024年12月30日</div>
         </div>
       
       
