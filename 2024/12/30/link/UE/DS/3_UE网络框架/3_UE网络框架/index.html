@@ -19,16 +19,17 @@
   <meta name="author" content="Li Xiang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的">
+    <meta name="description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明，并对序列化、ViewTarget等做详细说明。  建议对照源码阅读本文，有条件的情况下，可以进行断点调试观察执行细节。(可以下载本篇内容的实例代码，点击查看。)  在文章最后，将会对UE网络框架做完整的、总结性的介绍。 本文参考了大量网络上优秀的文章">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】UE网络框架">
 <meta property="og:url" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
-<meta property="og:description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明。 在文章最后，将会对UE网络框架做完整的、总结性的介绍。  本篇内容的实例代码，可点击查看。  Actor同步在服务器创建一个复制（bReplicates &#x3D; true）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的">
+<meta property="og:description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明，并对序列化、ViewTarget等做详细说明。  建议对照源码阅读本文，有条件的情况下，可以进行断点调试观察执行细节。(可以下载本篇内容的实例代码，点击查看。)  在文章最后，将会对UE网络框架做完整的、总结性的介绍。 本文参考了大量网络上优秀的文章">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png">
 <meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
 <meta property="article:published_time" content="2024-12-29T16:32:42.000Z">
-<meta property="article:modified_time" content="2024-12-29T17:29:44.559Z">
+<meta property="article:modified_time" content="2024-12-30T17:23:24.491Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
@@ -37,7 +38,7 @@
 <meta property="article:tag" content="RPC">
 <meta property="article:tag" content="UE源码">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
+<meta name="twitter:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -225,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          2.8k 字
         
       </span>
     
@@ -236,7 +237,7 @@
         
         
         
-          17 分钟
+          24 分钟
         
       </span>
     
@@ -278,12 +279,14 @@
             
               <div class="markdown-body">
                 
-                <h1 id="UE网络框架"><a href="#UE网络框架" class="headerlink" title="UE网络框架"></a>UE网络框架</h1><p>本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明。</p>
-<p>在文章最后，将会对UE网络框架做完整的、总结性的介绍。</p>
+                <h1 id="UE网络框架"><a href="#UE网络框架" class="headerlink" title="UE网络框架"></a>UE网络框架</h1><p>本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明，并对序列化、ViewTarget等做详细说明。</p>
 <blockquote>
-<p>本篇内容的实例代码，可<a target="_blank" rel="noopener" href="https://gitee.com/lixiang2202/uedemo_ds">点击</a>查看。</p>
+<p><em>建议对照源码阅读本文，有条件的情况下，可以进行断点调试观察执行细节。(可以下载本篇内容的实例代码，<a target="_blank" rel="noopener" href="https://gitee.com/lixiang2202/uedemo_ds">点击</a>查看。)</em></p>
 </blockquote>
-<h2 id="Actor同步"><a href="#Actor同步" class="headerlink" title="Actor同步"></a>Actor同步</h2><p>在服务器创建一个复制（<code>bReplicates = true</code>）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Authority Actor对应起来。</p>
+<p>在文章最后，将会对UE网络框架做完整的、总结性的介绍。</p>
+<p>本文参考了大量网络上优秀的文章，在最后列出所有参考文章的链接，供扩展阅读。</p>
+<h2 id="Actor同步"><a href="#Actor同步" class="headerlink" title="Actor同步"></a>Actor同步</h2><p>首先介绍一下Actor首次创建后的同步流程，从服务器端对复制Actor的收集、序列化、打包、发送再到客户端的数据接收、反序列化、Actor创建的流程来初步了解UE网络同步框架。</p>
+<p>在服务器创建一个复制（<code>bReplicates = true</code>）Actor后，将会开始同步流程，客户端则会同步创建这个Actor，并且和服务器的Authority Actor对应起来。</p>
 <blockquote>
 <p><em><strong>网络同步框架的核心是 <code>UNetDriver</code>对象，该对象负责管理UNetConnections:</strong></em></p>
 <ul>
@@ -337,21 +340,62 @@
 </ul>
 </li>
 <li><p><strong>UChannel::SendBunch</strong><br>发送Bunch。在这个过程中如果Bunch过大，则会进行分割。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// This is the max number of bits we can have in a single bunch</span><br><span class="hljs-type">const</span> int64 MAX_SINGLE_BUNCH_SIZE_BITS  = Connection-&gt;<span class="hljs-built_in">GetMaxSingleBunchSizeBits</span>();<br><span class="hljs-comment">// Max bytes we&#x27;ll put in a partial bunch</span><br><span class="hljs-type">const</span> int64 MAX_SINGLE_BUNCH_SIZE_BYTES = MAX_SINGLE_BUNCH_SIZE_BITS / <span class="hljs-number">8</span>;<br><span class="hljs-comment">// Max bits will put in a partial bunch (byte aligned, we dont want to deal with partial bytes in the partial bunches)</span><br><span class="hljs-type">const</span> int64 MAX_PARTIAL_BUNCH_SIZE_BITS = MAX_SINGLE_BUNCH_SIZE_BYTES * <span class="hljs-number">8</span>;<br>TArray&lt;FOutBunch*&gt;&amp; OutgoingBunches = Connection-&gt;<span class="hljs-built_in">GetOutgoingBunches</span>();<br>OutgoingBunches.<span class="hljs-built_in">Reset</span>();<br><span class="hljs-keyword">if</span>( Bunch-&gt;<span class="hljs-built_in">GetNumBits</span>() &gt; MAX_SINGLE_BUNCH_SIZE_BITS )<br>&#123;<br>	uint8 *data = Bunch-&gt;<span class="hljs-built_in">GetData</span>();<br>	int64 bitsLeft = Bunch-&gt;<span class="hljs-built_in">GetNumBits</span>();<br>	<span class="hljs-keyword">while</span>(bitsLeft &gt; <span class="hljs-number">0</span>)<br>	&#123;<br>		FOutBunch * PartialBunch = <span class="hljs-keyword">new</span> <span class="hljs-built_in">FOutBunch</span>(<span class="hljs-keyword">this</span>, <span class="hljs-literal">false</span>);<br>		int64 bitsThisBunch = FMath::<span class="hljs-built_in">Min</span>&lt;int64&gt;(bitsLeft, MAX_PARTIAL_BUNCH_SIZE_BITS);<br>		PartialBunch-&gt;<span class="hljs-built_in">SerializeBits</span>(data, bitsThisBunch);<br>		OutgoingBunches.<span class="hljs-built_in">Add</span>(PartialBunch);<br>		bitsLeft -= bitsThisBunch;<br>		data += (bitsThisBunch &gt;&gt; <span class="hljs-number">3</span>);<br>	&#125;<br>&#125;<br><span class="hljs-keyword">else</span><br>&#123;<br>	OutgoingBunches.<span class="hljs-built_in">Add</span>(Bunch);<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// This is the max number of bits we can have in a single bunch</span><br>  <span class="hljs-type">const</span> int64 MAX_SINGLE_BUNCH_SIZE_BITS  = Connection-&gt;<span class="hljs-built_in">GetMaxSingleBunchSizeBits</span>();<br>  <span class="hljs-comment">// Max bytes we&#x27;ll put in a partial bunch</span><br>  <span class="hljs-type">const</span> int64 MAX_SINGLE_BUNCH_SIZE_BYTES = MAX_SINGLE_BUNCH_SIZE_BITS / <span class="hljs-number">8</span>;<br>  <span class="hljs-comment">// Max bits will put in a partial bunch (byte aligned, we dont want to deal with partial bytes in the partial bunches)</span><br>  <span class="hljs-type">const</span> int64 MAX_PARTIAL_BUNCH_SIZE_BITS = MAX_SINGLE_BUNCH_SIZE_BYTES * <span class="hljs-number">8</span>;<br>  TArray&lt;FOutBunch*&gt;&amp; OutgoingBunches = Connection-&gt;<span class="hljs-built_in">GetOutgoingBunches</span>();<br>  OutgoingBunches.<span class="hljs-built_in">Reset</span>();<br>  <span class="hljs-keyword">if</span>( Bunch-&gt;<span class="hljs-built_in">GetNumBits</span>() &gt; MAX_SINGLE_BUNCH_SIZE_BITS )<br>  &#123;<br>  	uint8 *data = Bunch-&gt;<span class="hljs-built_in">GetData</span>();<br>  	int64 bitsLeft = Bunch-&gt;<span class="hljs-built_in">GetNumBits</span>();<br>  	<span class="hljs-keyword">while</span>(bitsLeft &gt; <span class="hljs-number">0</span>)<br>  	&#123;<br>  		FOutBunch * PartialBunch = <span class="hljs-keyword">new</span> <span class="hljs-built_in">FOutBunch</span>(<span class="hljs-keyword">this</span>, <span class="hljs-literal">false</span>);<br>  		int64 bitsThisBunch = FMath::<span class="hljs-built_in">Min</span>&lt;int64&gt;(bitsLeft, MAX_PARTIAL_BUNCH_SIZE_BITS);<br>  		PartialBunch-&gt;<span class="hljs-built_in">SerializeBits</span>(data, bitsThisBunch);<br>  		OutgoingBunches.<span class="hljs-built_in">Add</span>(PartialBunch);<br>  		bitsLeft -= bitsThisBunch;<br>  		data += (bitsThisBunch &gt;&gt; <span class="hljs-number">3</span>);<br>  	&#125;<br>  &#125;<br>  <span class="hljs-keyword">else</span><br>  &#123;<br>  	OutgoingBunches.<span class="hljs-built_in">Add</span>(Bunch);<br>  &#125;<br></code></pre></td></tr></table></figure>
 
 <p>后续流程为：<code>UChannel::SendRawBunch</code>-&gt;<code>UNetConnection::SendRawBunch</code>，进行包头和包体的封装。并调用 <code>UNetConnection::FlushNet</code>处理数据的发送。</p>
 </li>
-<li><p><strong>UNetConnection::FlushNet</strong><br>刷新所有待发送的数据，将其合并到一个数据包中通过 <code>LowLevelSend</code>进行发送。最终调用到 <code>Socket::Send()</code></p>
+<li><p><strong>UNetConnection::FlushNet</strong><br>刷新所有待发送的数据，将其合并到一个数据包中通过 <code>LowLevelSend</code>进行发送。最终调用到 <code>Socket::Send() </code></p>
 </li>
 </ul>
+<p>调用堆栈如下：</p>
 <h3 id="客户端接収Actor"><a href="#客户端接収Actor" class="headerlink" title="客户端接収Actor"></a>客户端接収Actor</h3><ul>
-<li><strong>UIpNetDriver::TickDispatch</strong><br>客户端通过 <code>TickDispatch</code>检测服务器消息，收到消息后通过 <code>ServerConnection</code>以及 <code>Channel</code>进行解析<br>这里首先会检查是否存在 <code>ServerConnection</code>，如果不存在则尝试处理握手创建Connection(<code>UIpNetDriver::ProcessConnectionlessPacket</code>)，前提是已经允许连接服务器。</li>
-<li><strong>UNetConnection::ReceivedRawPacket</strong><br>接收原始数据，<code>UNetConnection::DispatchPacket</code>进行数据的处理，如果没有 <code>UActorChannel</code>则创建Channel <code>UNetConnection::CreateChannelByName</code>，并调用 <code>UChannel::ReceivedRawBunch</code>进行Bunch的接收处理。<br>期间调用 <code>UPackageMapClient::ReceiveNetGUIDBunch</code>来接收Object和GUID的关系。</li>
-<li><strong>UChannel::ReceivedRawBunch</strong><br>处理、组装Bunch等一系列处理，流程是 <code>UChannel::ReceivedRawBunch</code>-&gt;<code>UChannel::ReceivedNextBunch</code>-&gt;<code>UChannel::ReceivedSequencedBunch</code>-&gt;<code>UActorChannel::ReceivedBunch</code><br>处理完Bunch信息后，调用 <code>UActorChannel::ProcessBunch</code>，进行下一步处理。</li>
-<li><strong>UActorChannel::ProcessBunch</strong></li>
+<li><p><strong>UIpNetDriver::TickDispatch</strong><br>客户端通过 <code>TickDispatch</code>检测服务器消息，收到消息后通过 <code>ServerConnection</code>以及 <code>Channel</code>进行解析<br>这里首先会检查是否存在 <code>ServerConnection</code>，如果不存在则尝试处理握手创建Connection(<code>UIpNetDriver::ProcessConnectionlessPacket</code>)，前提是已经允许连接服务器。</p>
+</li>
+<li><p><strong>UNetConnection::ReceivedRawPacket</strong><br>接收原始数据，<code>UNetConnection::DispatchPacket</code>进行数据的处理，如果没有 <code>UActorChannel</code>则创建Channel <code>UNetConnection::CreateChannelByName</code>，并调用 <code>UChannel::ReceivedRawBunch</code>，由Channl进一步处理Bunch。<br>期间调用 <code>UPackageMapClient::ReceiveNetGUIDBunch</code>来接收Object和GUID的关系。</p>
+</li>
+<li><p><strong>UChannel::ReceivedRawBunch</strong><br>处理、组装Bunch等一系列处理，流程是 <code>UChannel::ReceivedRawBunch</code>-&gt;<code>UChannel::ReceivedNextBunch</code>-&gt;<code>UChannel::ReceivedSequencedBunch</code>-&gt;<code>UActorChannel::ReceivedBunch</code><br>处理完Bunch信息后，调用 <code>UActorChannel::ProcessBunch</code>，进行下一步处理。</p>
+</li>
+<li><p><strong>UActorChannel::ProcessBunch</strong><br>如果Actor不存在，则反序列化Actor <code>UPackageMapClient::SerializeNewActor</code>，关联Channel <code>UActorChannel::SetChannelActor</code>。</p>
+<blockquote>
+<p><code>SerializeNewActor</code>方法在首次同步Actor的时候是一个非常重要的函数，用于Actor的序列化，后文中会专门对序列化反序列化进行详细的介绍。<br>在这里，Bunch作为一个FArchive的基类，此时我们需要解析这个Bunch，所以 <code>Ar.IsLoading() == true</code>，细节也在后续对序列化的介绍中进行说明。</p>
+</blockquote>
+<p>在 <code>SerializeNewActor</code>中，通过 <code>UPackageMapClient::SerializeObject</code>反序列化出来CDO，然后将Location、rotation、velocity等反序列化出来。<br>最后调用 <code>UWorld::SpawnActorAbsolute</code>将Actor创建出来并赋予位置等信息。<br>最终调用 <code>AActor::PostNetInit</code>进而执行 <code>AActor::BeginPlay</code>。</p>
+</li>
 </ul>
+<p>调用堆栈如下：</p>
+<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png" srcset="/img/loading.gif" lazyload class="" width="1735572968417">
+
+<h2 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h2><p>在上述Actor的同步过程中，<code>UPackageMapClient::SerializeNewActor</code>是一个非常重要的方法，负责了Actor的序列化和反序列化。本节重点讲述Actor的序列化。</p>
+<h3 id="访问者模式"><a href="#访问者模式" class="headerlink" title="访问者模式"></a>访问者模式</h3><p>UE的序列化采用 <code>访问者模式</code>来进行设计。</p>
+<p><strong>访问者模式</strong>：封装一些作用于某种数据结构中的各元素的操作，它可以在不改变这个数据结构的前提下定义作用于其内部各个元素的新操作。</p>
+<p>更多可参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/380161731">秒懂设计模式之访问者模式（Visitor Pattern） - 知乎</a></p>
+<h3 id="FArchive"><a href="#FArchive" class="headerlink" title="FArchive"></a>FArchive</h3><p>UE采用了【访问者】模式，<code>FArchive</code>就是访问模式中的访问者（的基类）。</p>
+<blockquote>
+<p>Base class for archives that can be used for loading, saving, and garbage collecting in a byte order neutral way.</p>
+</blockquote>
+<p><code>class FArchive</code>是UE序列化中最重要的类，用于各种字节序的处理，是各种 <code>Archive</code>的基类。</p>
+<p>【UE对访问者模式的变化，使用操作符&lt;&lt;重载来实现，左边是访问者FArchive，右边是被访问者】</p>
+<p> <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/617464719">UE 序列化介绍及源码解析 - 知乎</a></p>
+<h3 id="Actor的序列化"><a href="#Actor的序列化" class="headerlink" title="Actor的序列化"></a>Actor的序列化</h3><p>序列化出一个新的Actor分为两种，一种是静态Actor，一种是动态Actor。</p>
+<ul>
+<li><p><strong>静态Actor</strong><br>已经加载到地图中、或是CDO对象、或是原生对象，则是静态Actor</p>
+<blockquote>
+<p><code>HasAnyFlags(RF_WasLoaded | RF_DefaultSubObject) || IsNative() || IsDefaultSubobject()</code></p>
+</blockquote>
+<p>静态对象，序列化的过程不需要序列化三位信息，但是需要序列化其Outer和GUID和PathName。客户端需要找到该UObject绑定NetUID。（因此就通过其Outer和自身的PathName来找到该UObject)</p>
+</li>
+<li><p><strong>动态Actor</strong><br>理论上，不是静态Actor，就是动态Actor。</p>
+<blockquote>
+<p><code>bool IsDynamic() const&#123; return IsValid() &amp;&amp; !IsStatic(); &#125;</code></p>
+</blockquote>
+<p>动态对象通过一个ArcheType以及通过序列化一些基本的三位信息和速度信息来在客户端Spawn一个ArcheType,并赋予它一些三维信息和速度，是它和原来的Actor看起来一模一样。</p>
+</li>
+</ul>
+<h3 id="SerializeNewActor"><a href="#SerializeNewActor" class="headerlink" title="SerializeNewActor"></a>SerializeNewActor</h3><p>有了上述序列化的了解后，理解 <code>SerializeNewActor</code>就简单很多了。下面是精简的源码，并加以注释：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">UPackageMapClient::SerializeNewActor</span><span class="hljs-params">(FArchive&amp; Ar, <span class="hljs-keyword">class</span> UActorChannel *Channel, <span class="hljs-keyword">class</span> AActor*&amp; Actor)</span></span><br><span class="hljs-function"></span>&#123;<br>	uint8 bIsClosingChannel = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">if</span> (Ar.<span class="hljs-built_in">IsLoading</span>() )<br>	&#123;<br>		FInBunch* InBunch = (FInBunch*)&amp;Ar;<br>		bIsClosingChannel = InBunch-&gt;bClose;		<span class="hljs-comment">// This is so we can determine that this channel was opened/closed for destruction</span><br>		<span class="hljs-built_in">UE_LOG</span>(LogNetPackageMap, Log, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;UPackageMapClient::SerializeNewActor BitPos: %d&quot;</span>), InBunch-&gt;<span class="hljs-built_in">GetPosBits</span>() );<br>		<span class="hljs-built_in">ResetTrackedSyncLoadedGuids</span>();<br>	&#125;<br>....<br>&#125;<br></code></pre></td></tr></table></figure>
+
 <h2 id="属性同步"><a href="#属性同步" class="headerlink" title="属性同步"></a>属性同步</h2><h2 id="RPC原理"><a href="#RPC原理" class="headerlink" title="RPC原理"></a>RPC原理</h2><h2 id="关键流程"><a href="#关键流程" class="headerlink" title="关键流程"></a>关键流程</h2><h3 id="Channel关联Actor"><a href="#Channel关联Actor" class="headerlink" title="Channel关联Actor"></a>Channel关联Actor</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533713823">UE4网络同步-Actor同步流程详解 - 知乎</a></p>
-<h3 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h3><h3 id="ViewTarget"><a href="#ViewTarget" class="headerlink" title="ViewTarget"></a>ViewTarget</h3><h2 id="网络同步框架"><a href="#网络同步框架" class="headerlink" title="网络同步框架"></a>网络同步框架</h2><h3 id="核心类图"><a href="#核心类图" class="headerlink" title="核心类图"></a>核心类图</h3><img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png" srcset="/img/loading.gif" lazyload class="" title="核心类图">
+<h3 id="ViewTarget"><a href="#ViewTarget" class="headerlink" title="ViewTarget"></a>ViewTarget</h3><h2 id="网络同步框架"><a href="#网络同步框架" class="headerlink" title="网络同步框架"></a>网络同步框架</h2><h3 id="核心类图"><a href="#核心类图" class="headerlink" title="核心类图"></a>核心类图</h3><img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png" srcset="/img/loading.gif" lazyload class="" title="核心类图">
 
 <ul>
 <li>NetDriver<br>网络处理的核心，负责管理UNetConnections。<br>服务器NetDriver将维护一个NetConnects列表，每个连接代表一个连接的玩家，负责复制Actor数据<br>客户端NetDriver管理连接到服务器的单个连接</li>
@@ -362,7 +406,7 @@
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533713823">UE4网络同步-Actor同步流程详解 - 知乎</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533738684">UE4网络同步-RPC流程详解 - 知乎</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533748683">UE4网络同步-客户端连接DS的流程 - 知乎</a></p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/640723352">UE4 网络同步框架源码解析 - 知乎</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/640723352">UE4 网络同步框架源码解析 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/617464719">UE 序列化介绍及源码解析 - 知乎</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/532800522">UE4网络同步-基础流程 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682972215">UE4 属性同步(一)-同步前的准备 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/683938349">UE4 属性同步(二) - 属性对比 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/685266581">UE4 属性同步(三) - 属性同步发送 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/687813320">UE4 属性同步(四) - 属性同步接收 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/678112760">UE4 浅谈网络同步中的RPC - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533738684">UE4网络同步-RPC流程详解 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/245358090">[UE4 Network] RPC 之哪里调用 和 哪里执行 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/187254524">[UE4 Network] RPC 调用的一些细节 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/56548096">UE4网络同步思考（一）—经典同步方案 - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/56922476">UE4网络同步思考（二）—大世界同步方案ReplicationGraph - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34723199">《Exploring in UE4》网络同步原理深入（上）[原理分析] - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/55596030">《Exploring in UE4》网络同步原理深入（下）[原理分析] - 知乎</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34721113">《Exploring in UE4》关于网络同步的理解与思考[概念理解] - 知乎</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_48223371/article/details/143139048">虚幻引擎DS服务器(专用服务器)初步搭建及简单数据同步应用(二)_虚幻分布式服务器-CSDN博客</a><br><a target="_blank" rel="noopener" href="https://blog.uwa4d.com/archives/USparkle_Exploring.html">《Exploring in UE4》网络同步原理深入（上） - UWA问答 | 博客 | 游戏及VR应用性能优化记录分享 | 侑虎科技</a></p>
 
                 
