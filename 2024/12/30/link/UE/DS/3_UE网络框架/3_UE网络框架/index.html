@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735743413662.png">
 <meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
 <meta property="article:published_time" content="2024-12-29T16:32:42.000Z">
-<meta property="article:modified_time" content="2025-01-01T17:06:32.310Z">
+<meta property="article:modified_time" content="2025-01-01T17:10:28.189Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
@@ -367,7 +367,8 @@
 <img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png" srcset="/img/loading.gif" lazyload class="" width="1735572968417">
 
 <h2 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h2><p>在上述Actor的同步过程中，<code>UPackageMapClient::SerializeNewActor</code>是一个非常重要的方法，负责了Actor的序列化和反序列化。本节重点讲述Actor的序列化。</p>
-<h3 id="FArchive"><a href="#FArchive" class="headerlink" title="FArchive"></a>FArchive</h3><p><code>class FArchive</code>是UE序列化中最重要的类，实现了对各种类型的序列化处理，是各种 <code>Archive</code>的基类。<br>观察 <code>FArchive</code>类，发现其实现了很多重载 <code>&lt;&lt;</code>操作符方法，通过友元(friend)，为每个需要序列化的类型实现了操作符的重载：</p>
+<h3 id="FArchive"><a href="#FArchive" class="headerlink" title="FArchive"></a>FArchive</h3><p>在了解Actor的序列化之前，需要预先熟悉UE的序列化框架。<code>class FArchive</code>是UE序列化中最重要的类，实现了对各种类型的序列化处理，是各种 <code>Archive</code>的基类。</p>
+<p>观察 <code>FArchive</code>类，发现其实现了很多重载 <code>&lt;&lt;</code>操作符方法，通过友元(friend)，为每个需要序列化的类型实现了操作符的重载：</p>
 <img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735743413662.png" srcset="/img/loading.gif" lazyload class="" width="1735743413662">
 
 <p>这样，对任意类型的变量进行序列化，有以下写法：</p>
@@ -401,10 +402,10 @@
 <li>FInBunch：用于从网络接收数据并进行反序列化<br>继承链是：FInBunch-&gt;FNetBitReader-&gt;FBitReader-&gt;-&gt;FBitArchive-&gt;FArchive</li>
 </ul>
 <blockquote>
-<p>本篇的重点在于介绍UE网络同步框架，而FArchive的各种实现又过于庞大，好在究其源码细节，没有特别复杂的实现。感兴趣的可以自行阅读代码，对于序列化的核心在于FBitReader和FBitWriter中对于各种Serialize方法的重写。FNetBitWriter和FNetBitReader中对各种类型的<code>operator&lt;&lt;</code>进行了重写，重点是实现在UPackageMap的SerializeObject方法。</p>
+<p>本篇的重点在于介绍UE网络同步框架，而FArchive的各种实现又过于庞大，好在究其源码细节，没有特别复杂的实现。感兴趣的可以自行阅读代码，对于网络序列化的核心在于FBitReader和FBitWriter中对于各种Serialize方法的重写。FNetBitWriter和FNetBitReader中对各种类型的<code>operator&lt;&lt;</code>进行了重写，重点是实现在UPackageMap的SerializeObject方法。</p>
 </blockquote>
 <blockquote>
-<p>对于FArchive的理解到此，就可以比较轻松的理解UE网络框架中对于序列化部分。但对于UE的序列化框架，还有更多细节没有探究，如对C++原生类的序列化、自定义序列化等。若读者对此十分感兴趣，可以参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/617464719">UE 序列化介绍及源码解析 - 知乎</a>。本文不在进行深入介绍。</p>
+<p>对于FArchive的理解到此，就可以比较轻松的理解UE网络框架中对于序列化部分。但对于UE的序列化框架，还有更多细节没有探究，如常见的Archive的实现细节、对C++原生类的序列化、自定义序列化等。若读者对此十分感兴趣，可以参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/617464719">UE 序列化介绍及源码解析 - 知乎</a>。本文不在进行深入介绍。</p>
 </blockquote>
 <h3 id="Actor的序列化"><a href="#Actor的序列化" class="headerlink" title="Actor的序列化"></a>Actor的序列化</h3><p>序列化出一个新的Actor分为两种，一种是静态Actor，一种是动态Actor。</p>
 <ul>
