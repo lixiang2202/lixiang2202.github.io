@@ -22,19 +22,19 @@
     <meta name="description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明，并对序列化、ViewTarget等做详细说明。  建议对照源码阅读本文。如果条件允许,可以通过断点调试来观察具体的执行细节。本文相关的示例代码可以在这里下载。  在文章最后，将会对UE网络框架做完整的、总结性的介绍。 本文参考了大量网络上优秀的文章，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【UE-DS】UE网络框架">
-<meta property="og:url" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:url" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="LiXiang&#39;s Blog">
 <meta property="og:description" content="UE网络框架本篇通过分析Actor同步、属性同步和RPC流程源码，在分析过程中，对UE网络框架进行逐步的介绍，涉及到关键的概念会进行单独的详细的说明，并对序列化、ViewTarget等做详细说明。  建议对照源码阅读本文。如果条件允许,可以通过断点调试来观察具体的执行细节。本文相关的示例代码可以在这里下载。  在文章最后，将会对UE网络框架做完整的、总结性的介绍。 本文参考了大量网络上优秀的文章，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735743413662.png">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781854994.png">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781914503.png">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/ParentCmd%E5%92%8CLayoutCmd.dio.png">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736788900984.png">
-<meta property="og:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
-<meta property="article:published_time" content="2024-12-29T16:32:42.000Z">
-<meta property="article:modified_time" content="2025-01-13T17:34:10.720Z">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735743413662.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781854994.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781914503.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/ParentCmd%E5%92%8CLayoutCmd.dio.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736788900984.png">
+<meta property="og:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png">
+<meta property="article:published_time" content="2025-01-13T17:40:25.000Z">
+<meta property="article:modified_time" content="2025-01-13T17:40:26.408Z">
 <meta property="article:author" content="Li Xiang">
 <meta property="article:tag" content="UE">
 <meta property="article:tag" content="Dedicated Server">
@@ -43,7 +43,7 @@
 <meta property="article:tag" content="RPC">
 <meta property="article:tag" content="UE源码">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png">
+<meta name="twitter:image" content="https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -368,12 +368,12 @@
 </li>
 </ul>
 <p>调用堆栈如下：</p>
-<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png" srcset="/img/loading.gif" lazyload class="" width="1735572968417">
+<img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735572968417.png" srcset="/img/loading.gif" lazyload class="" width="1735572968417">
 
 <h2 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h2><p>在上述Actor的同步过程中，<code>UPackageMapClient::SerializeNewActor</code>是一个非常重要的方法，负责了Actor的序列化和反序列化。本节重点讲述Actor的序列化。</p>
 <h3 id="FArchive"><a href="#FArchive" class="headerlink" title="FArchive"></a>FArchive</h3><p>在了解Actor的序列化之前，需要预先熟悉UE的序列化框架。<code>class FArchive</code>是UE序列化中最重要的类，实现了对各种类型的序列化处理，是各种 <code>Archive</code>的基类。</p>
 <p>观察 <code>FArchive</code>类，发现其实现了很多重载 <code>&lt;&lt;</code>操作符方法，通过友元(friend)，为每个需要序列化的类型实现了操作符的重载：</p>
-<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735743413662.png" srcset="/img/loading.gif" lazyload class="" width="1735743413662">
+<img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1735743413662.png" srcset="/img/loading.gif" lazyload class="" width="1735743413662">
 
 <p>这样，对任意类型的变量进行序列化，有以下写法：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> num = <span class="hljs-number">1</span>;<br>FArchive Archive;<br>Archive &lt;&lt; num;<br></code></pre></td></tr></table></figure>
@@ -472,10 +472,10 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">USTRUCT</span>()<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">FSimpleStruct</span><br>&#123;<br>	<span class="hljs-built_in">GENERATED_BODY</span>()<br><br>	<span class="hljs-built_in">UPROPERTY</span>()<br>	<span class="hljs-type">int</span> Param1 = <span class="hljs-number">0</span>;<br>	<span class="hljs-built_in">UPROPERTY</span>()<br>	<span class="hljs-type">int</span> Param2 = <span class="hljs-number">0</span>;<br>&#125;;<br><span class="hljs-built_in">UCLASS</span>()<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">UEDEMO_DS_API</span> ASimpleReplicatedActor : <span class="hljs-keyword">public</span> AActor<br>&#123;<br>	<span class="hljs-built_in">GENERATED_BODY</span>()<br><br>	<span class="hljs-built_in">UPROPERTY</span>(Replicated)<br>	int32 ReplicatedInt;<br>	<span class="hljs-built_in">UPROPERTY</span>(Replicated)<br>	FSimpleStruct ReplicatedStruct;<br>	<span class="hljs-built_in">UPROPERTY</span>(Replicated)<br>	TArray&lt;int32&gt; ReplicatedIntArray;<br>	<span class="hljs-built_in">UPROPERTY</span>(Replicated)<br>	TArray&lt;FSimpleStruct&gt; ReplicatedStructArray;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
 <p>下图为该类的FRepLayout.Parents信息：<br>可以观察到，Parents的idx(索引:index)在10之前的，都是其基类Actor所需要同步的成员，idx10、idx11、idx12、idx13则是与该类定义的三个需要同步的成员一一对应。这三个类型就是<strong>顶层属性</strong>。</p>
-<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781854994.png" srcset="/img/loading.gif" lazyload class="" width="1736781854994">
+<img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781854994.png" srcset="/img/loading.gif" lazyload class="" width="1736781854994">
 
 <p>下图为FRepLayout.Cmds信息：</p>
-<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781914503.png" srcset="/img/loading.gif" lazyload class="" width="1736781914503">
+<img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736781914503.png" srcset="/img/loading.gif" lazyload class="" width="1736781914503">
 
 <p>可以看到，顶层属性如果是基础类型，那么FRepParentCmd和FRepLayoutCmd是一一对应的关系，而数组和结构体对象可能是一对多的关系。在数组结尾或处理完所有属性后，会插入类型为ERepLayoutCmdType::Return的Cmd。</p>
 <blockquote>
@@ -487,7 +487,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FRepLayout</span> : <span class="hljs-keyword">public</span> FGCObject, <span class="hljs-keyword">public</span> TSharedFromThis&lt;FRepLayout&gt;<br>&#123;<br>  <span class="hljs-comment">// 用于存储所有的ParentCmd</span><br>  TArray&lt;FRepParentCmd&gt; Parents;<br>  <span class="hljs-comment">// 用于存储所有的Cmd</span><br>  TArray&lt;FRepLayoutCmd&gt; Cmds;<br>&#125;;<br></code></pre></td></tr></table></figure>
 </blockquote>
 <p>下图为FRepParentCmd与FRepLayoutCmd的关系图：</p>
-<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/ParentCmd%E5%92%8CLayoutCmd.dio.png" srcset="/img/loading.gif" lazyload class="" width="1736533588877">
+<img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/ParentCmd%E5%92%8CLayoutCmd.dio.png" srcset="/img/loading.gif" lazyload class="" width="1736533588877">
 
 <ul>
 <li>ParentCmd的CmdStart和CmdEnd是一个左闭右开的区间:[15,16)，与LayoutCmd的ParentIndex表达了互相关联的关系</li>
@@ -503,7 +503,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// RepLayout.h</span><br>TArray&lt;FHandleToCmdIndex&gt; BaseHandleToCmdIndex;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">FHandleToCmdIndex</span><br>&#123;<br>  <span class="hljs-comment">// 表示当前Handle对应的CmdIndex</span><br>  int32 CmdIndex; <br>  <span class="hljs-comment">// 用于存储子序列的HandleToCmdIndex</span><br>  TUniquePtr&lt;TArray&lt;FHandleToCmdIndex&gt;&gt; HandleToCmdIndex; <br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>下图为<code>ASimpleReplicatedActor</code>的<code>BaseHandleToCmdIndex</code>的信息：</p>
-<img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736788900984.png" srcset="/img/loading.gif" lazyload class="" width="1736788900984">
+<img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/1736788900984.png" srcset="/img/loading.gif" lazyload class="" width="1736788900984">
 <p>CmdIndex&#x3D;18代表的是<code>ReplicatedIntArray</code>,即基础类型动态数组，对应一个Handle&#x3D;19。<br>CmdIndex&#x3D;21代表的是<code>ReplicatedStructArray</code>,即结构体动态数组，对应两个Handle&#x3D;22、Handle&#x3D;23。<br>详见【FRepParentCmd与FRepLayoutCmd的关系图】。</p>
 <h4 id="ShadowOffset"><a href="#ShadowOffset" class="headerlink" title="ShadowOffset"></a>ShadowOffset</h4><p>【TODO：作用】</p>
 <p>【TODO：计算ShaowOffset】</p>
@@ -589,7 +589,7 @@
 <h3 id="客户端接收属性变化"><a href="#客户端接收属性变化" class="headerlink" title="客户端接收属性变化"></a>客户端接收属性变化</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/687813320">UE4 属性同步(四) - 属性同步接收 - 知乎</a></p>
 <h2 id="RPC原理"><a href="#RPC原理" class="headerlink" title="RPC原理"></a>RPC原理</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/678112760">UE4 浅谈网络同步中的RPC - 知乎</a></p>
 <h2 id="关键流程"><a href="#关键流程" class="headerlink" title="关键流程"></a>关键流程</h2><h3 id="Channel关联Actor"><a href="#Channel关联Actor" class="headerlink" title="Channel关联Actor"></a>Channel关联Actor</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/533713823">UE4网络同步-Actor同步流程详解 - 知乎</a></p>
-<h3 id="ViewTarget"><a href="#ViewTarget" class="headerlink" title="ViewTarget"></a>ViewTarget</h3><h2 id="网络同步框架"><a href="#网络同步框架" class="headerlink" title="网络同步框架"></a>网络同步框架</h2><h3 id="核心类图"><a href="#核心类图" class="headerlink" title="核心类图"></a>核心类图</h3><img src="/2024/12/30/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png" srcset="/img/loading.gif" lazyload class="" title="核心类图">
+<h3 id="ViewTarget"><a href="#ViewTarget" class="headerlink" title="ViewTarget"></a>ViewTarget</h3><h2 id="网络同步框架"><a href="#网络同步框架" class="headerlink" title="网络同步框架"></a>网络同步框架</h2><h3 id="核心类图"><a href="#核心类图" class="headerlink" title="核心类图"></a>核心类图</h3><img src="/2025/01/14/link/UE/DS/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/3_UE%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/%E6%A0%B8%E5%BF%83%E7%B1%BB%E5%9B%BE.dio.png" srcset="/img/loading.gif" lazyload class="" title="核心类图">
 
 <ul>
 <li>NetDriver<br>网络处理的核心，负责管理UNetConnections。<br>服务器NetDriver将维护一个NetConnects列表，每个连接代表一个连接的玩家，负责复制Actor数据<br>客户端NetDriver管理连接到服务器的单个连接</li>
@@ -665,7 +665,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>【UE-DS】UE网络框架</div>
-      <div>https://lixiang2202.github.io/2024/12/30/link/UE/DS/3_UE网络框架/3_UE网络框架/</div>
+      <div>https://lixiang2202.github.io/2025/01/14/link/UE/DS/3_UE网络框架/3_UE网络框架/</div>
     </div>
     <div class="license-meta">
       
@@ -677,7 +677,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月30日</div>
+          <div>2025年1月14日</div>
         </div>
       
       
